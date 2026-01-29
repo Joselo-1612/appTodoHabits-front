@@ -3,17 +3,20 @@ import LayoutMain from "../layouts/LayoutMain";
 import { loginRequest } from "../services/auth";
 import { useState } from "react";
 import { LoginPageProps } from "../interfaces/Auth";
+import { useNavigate } from "react-router-dom";
 
 const LoginPage = () => {
 
+  const navigate = useNavigate();
   const [sesion, setSesion] = useState<LoginPageProps>({
     usu_email: "",
     usu_password: ""
   });
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    loginRequest(sesion);
+    await loginRequest(sesion);
+    navigate("/habits");
   }
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
