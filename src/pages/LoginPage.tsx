@@ -16,7 +16,7 @@ const LoginPage = () => {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     await loginRequest(sesion);
-    navigate("/habits");
+    navigate("/habitos");
   }
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -28,7 +28,7 @@ const LoginPage = () => {
   }
 
   return (
-    <LayoutMain titlePage="login">
+    <LayoutMain>
       <Form
         className="border p-4 rounded bg-light shadow-sm"
         style={{ maxWidth: "400px", margin: "auto" }}
