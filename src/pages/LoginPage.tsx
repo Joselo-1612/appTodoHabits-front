@@ -1,5 +1,4 @@
 import { Button, Form } from "react-bootstrap";
-import LayoutMain from "../layouts/LayoutMain";
 import { loginRequest } from "../services/auth";
 import { useState } from "react";
 import { LoginPageProps } from "../interfaces/Auth";
@@ -28,7 +27,7 @@ const LoginPage = () => {
   }
 
   return (
-    <LayoutMain>
+    <div className="mt-5">
       <Form
         className="border p-4 rounded bg-light shadow-sm"
         style={{ maxWidth: "400px", margin: "auto" }}
@@ -58,7 +57,7 @@ const LoginPage = () => {
           Ingresar
         </Button>
       </Form>
-    </LayoutMain>
+    </div>
   );
 };
 

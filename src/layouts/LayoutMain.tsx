@@ -1,5 +1,5 @@
 import { ReactNode } from "react";
-import { Badge, Nav } from "react-bootstrap";
+import { Nav } from "react-bootstrap";
 import { BsCalculator, BsFilterLeft } from "react-icons/bs";
 
 interface ContainerProps {

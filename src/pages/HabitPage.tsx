@@ -3,9 +3,9 @@ import LayoutMain from "../layouts/LayoutMain";
 import { FaBarsProgress, FaCalendarDays, FaFilePen } from "react-icons/fa6";
 import { Badge, Button, Form, ProgressBar, Table } from "react-bootstrap";
 import { useEffect, useState } from "react";
-import { habitsListRequest } from "../services/habit";
+import { habitsCompleteListRequest, habitsListRequest } from "../services/habit";
 import { BsPencilSquare, BsPlusCircle, BsTrash } from "react-icons/bs";
-import { obtenerSemanaActual } from "../utils/dateFormat";
+import { getDateFormat, getWeekCurrent } from "../utils/date";
 import './../App.css'
 import { HabitJson } from "../interfaces/Habit";
 
@@ -24,12 +24,19 @@ const HabitPage = () => {
     }
   }
 
+  const getListHabitsComplete = async () => {
+    try {
+      const response = await habitsCompleteListRequest();
+      console.log("response de habitsCompleteListRequest", response);
+    } catch (error) {
+      console.error("Error fetching habits complete:", error);
+    }
+  }
+
 
   useEffect(() => {
     getListHabists();
-    // if (!sessionToken) {
-    //   window.location.href = "/login"; // Redirigir a la página de inicio de sesión si no hay token
-    // }
+    getListHabitsComplete();
   }, [sessionToken]);
 
   return (
@@ -101,10 +108,10 @@ const HabitPage = () => {
             </tr>
           </thead>
           <tbody>
-            {obtenerSemanaActual().map((fecha, index) => (
+            {getWeekCurrent().map((fecha, index) => (
               <tr>
                 <td key={index} className="align-middle">
-                  <small>{fecha}</small>
+                  <small>{getDateFormat(fecha)}</small>
                 </td>
                 <td className="align-middle">
                   <ProgressBar
