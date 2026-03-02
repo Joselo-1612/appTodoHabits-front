@@ -1,30 +1,12 @@
 import { months } from "./data";
 
-export const getWeekCurrent = () => {
+export const getDateFormat = (date: string) => {
 
-  const week = [];
-  const today = new Date();
-  const dayWeek = today.getDay(); // 0 = domingo, 6 = sábado
+  const dateFormat = new Date(date + "T00:00:00");
 
-  // Domingo de la semana actual
-  const startWeek = new Date(today);
-  startWeek.setDate(today.getDate() - dayWeek);
-
-  for (let i = 0; i < 7; i++) {
-    const date = new Date(startWeek);
-
-    date.setDate(startWeek.getDate() + i);
-    week.push(date);
-  }
-
-  return week;
-}
-
-export const getDateFormat = (date: Date) => {
-
-  const mes = months[date.getMonth()];
-  const dia = date.getDate();
-  const anio = date.getFullYear();
+  const mes = months[dateFormat.getMonth()];
+  const dia = dateFormat.getDate();
+  const anio = dateFormat.getFullYear();
 
   return `${mes} ${dia}, ${anio}`;
 }

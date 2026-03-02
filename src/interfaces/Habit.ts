@@ -8,3 +8,14 @@ export interface HabitJson {
     hab_use_id: number;
     hab_date: string;
 }
+
+export interface HabitComplete {
+    habits: HabitCompleteDetail[],
+    percentage: number
+}
+
+export interface HabitCompleteDetail {
+    hab_id: number,
+    hac_date: string,
+    hac_id: number
+}
