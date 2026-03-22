@@ -44,6 +44,10 @@ const HabitPage = () => {
     }
   }
 
+  const handleRefresh = () => {
+    setRefreshPage(!refreshPage);
+  }
+
   useEffect(() => {
     getListHabists();
     getListHabitsComplete();
@@ -51,7 +55,7 @@ const HabitPage = () => {
 
   return (
     <LayoutMain>
-      <HabitsList habits={habits || []} />
+      <HabitsList habits={habits || []} refresh={handleRefresh}/>
       <HabitsWeekTable
         habits={habits || []}
         habitsComplete={habitsComplete}

@@ -1,5 +1,4 @@
 import ProtectedRoute from '../components/ProtectedRoute'
-import { useSession } from '../hooks/useSession'
 import HabitPage from '../pages/HabitPage'
 import LoginPage from '../pages/LoginPage'
 

@@ -2,12 +2,18 @@ import { FaAlignLeft } from "react-icons/fa";
 import { Badge, Button } from "react-bootstrap";
 import { BsPencilSquare, BsPlusCircle, BsTrash } from "react-icons/bs";
 import { HabitJson } from "../../interfaces/Habit";
+import HabitNew from "./HabitNew";
+import { useUtil } from "../../hooks/useUtil";
 
 interface HabitsListProps {
   habits: HabitJson[];
+  refresh: () => void;
 }
 
-const HabitsList: React.FC<HabitsListProps> = ({ habits }) => {
+const HabitsList: React.FC<HabitsListProps> = ({ habits, refresh }) => {
+
+  const {show, showActive, showInactive} = useUtil();
+
   return (
     <section className="container p-4 my-4 rounded border">
       <div className="d-flex align-items-center justify-content-between gap-3 mb-5">
@@ -24,11 +30,13 @@ const HabitsList: React.FC<HabitsListProps> = ({ habits }) => {
           size="sm"
           className="d-flex align-items-center gap-1"
           style={{ backgroundColor: "#f77f00", border: "none" }}
+          onClick={() => showActive()}
         >
           <BsPlusCircle />
           <span>Nuevo</span>
         </Button>
       </div>
+      <HabitNew show={show} onClose={showInactive} refresh={refresh}/>
       <ul className="row list-unstyled">
         {habits?.map((habit: any) => (
           <li key={habit.id} className="col-12 col-md-3 mb-4">

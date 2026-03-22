@@ -13,3 +13,9 @@ export const months = [
     "diciembre"
 ];
 
+export const type_recurrence = [
+    "diaria",
+    "semanal",
+    "mensual",
+    "personalizado"
+]
