@@ -4,6 +4,7 @@ import { BsPencilSquare, BsPlusCircle, BsTrash } from "react-icons/bs";
 import { HabitJson } from "../../interfaces/Habit";
 import HabitNew from "./HabitNew";
 import { useUtil } from "../../hooks/useUtil";
+import { useState } from "react";
 
 interface HabitsListProps {
   habits: HabitJson[];
@@ -13,6 +14,14 @@ interface HabitsListProps {
 const HabitsList: React.FC<HabitsListProps> = ({ habits, refresh }) => {
 
   const {show, showActive, showInactive} = useUtil();
+  const [isNewHabit, setIsNewHabit] = useState<boolean>(true);
+  const [selectedHabit, setSelectedHabit] = useState<HabitJson | null>(null);
+
+  const handleDeleteHabit = (habit: HabitJson) => {
+    setSelectedHabit(habit);
+    setIsNewHabit(false);
+    showActive();
+  }
 
   return (
     <section className="container p-4 my-4 rounded border">
@@ -30,19 +39,28 @@ const HabitsList: React.FC<HabitsListProps> = ({ habits, refresh }) => {
           size="sm"
           className="d-flex align-items-center gap-1"
           style={{ backgroundColor: "#f77f00", border: "none" }}
-          onClick={() => showActive()}
+          onClick={() => {
+            setIsNewHabit(true);
+            showActive();
+          }}
         >
           <BsPlusCircle />
           <span>Nuevo</span>
         </Button>
       </div>
-      <HabitNew show={show} onClose={showInactive} refresh={refresh}/>
+      <HabitNew
+        show={show}
+        onClose={showInactive}
+        refresh={refresh}
+        selectedHabit={selectedHabit ?? null}
+        isNewHabit={isNewHabit}
+      />
       <ul className="row list-unstyled">
         {habits?.map((habit: any) => (
           <li key={habit.id} className="col-12 col-md-3 mb-4">
             <div className="d-flex align-items-center gap-1">
               <BsPencilSquare />
-              <BsTrash />
+              <BsTrash onClick={() => handleDeleteHabit(habit)}/>
               <span className="fw-2">
                 {habit.hab_name}
                 <Badge pill bg="light" text="dark">

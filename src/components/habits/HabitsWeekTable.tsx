@@ -35,10 +35,6 @@ const HabitsWeekTable = ({ habits, habitsComplete, handleDoneSkipped }: Props) =
               </th>
             ))}
 
-            <th className="text-dark text-center col-2">
-              <FaFilePen />
-              <small> Nota</small>
-            </th>
           </tr>
         </thead>
 
@@ -71,10 +67,6 @@ const HabitsWeekTable = ({ habits, habitsComplete, handleDoneSkipped }: Props) =
                     />
                   </td>
                 ))}
-
-                <td>
-                  <Form.Control as="textarea" rows={1} />
-                </td>
               </tr>
             ))}
         </tbody>

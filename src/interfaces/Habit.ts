@@ -7,6 +7,10 @@ export interface HabitJson {
     hab_use_id?: number;
 }
 
+export interface HabitRegisterJson extends HabitJson {
+    hab_days_of_week?: string[];
+}
+
 export interface HabitComplete {
     habits: HabitCompleteDetail[],
     percentage: number

@@ -12,6 +12,15 @@ export const useForm = <T extends object>(initialValue: T) => {
     });
   };
 
+  const handleAddDaysCheckbox = (e: ChangeEvent<HTMLInputElement>) => {
+    const { name, value, checked } = e.target;
+    const currentFilters: string[] = form[name as keyof typeof form] as string[];
+    const updatedFilters = checked ? [...currentFilters, value] : currentFilters.filter(item => item !== value);
+    setForm({
+      ...form,
+      [name]: updatedFilters
+    });
+  };
 //   const handleFilter = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
 //     const { name, value } = e.target;
 //     setForm({
@@ -36,6 +45,7 @@ export const useForm = <T extends object>(initialValue: T) => {
 //     });
 //   };
 
+
   const handlePagination = (pageNumber: number) => {
     setForm({
       ...form,
@@ -48,7 +58,6 @@ export const useForm = <T extends object>(initialValue: T) => {
     setForm,
     handleChange,
     handlePagination,
-    // handleFilter,
-    // handleCheckbox
+    handleAddDaysCheckbox
   };
 };

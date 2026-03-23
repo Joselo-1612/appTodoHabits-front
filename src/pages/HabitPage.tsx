@@ -15,7 +15,6 @@ const HabitPage = () => {
   const getListHabists = async () => {
     try {
       const response = await habitsListRequest();
-      console.log("response de habitsListRequest", response);
       setHabits(response.data.data);
     } catch (error) {
       console.error("Error fetching habits:", error);

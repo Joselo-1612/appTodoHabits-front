@@ -12,7 +12,7 @@ const LayoutMain: React.FC<ContainerProps> = ({ children }) => {
         <Nav
           defaultActiveKey="/home"
           className="flex-column col-12 col-md-2 m-0 p-1"
-          style={{ backgroundColor: "#F5F2EF" }}
+          style={{ backgroundColor: "#f8f5e4" }}
           hidden={false}
         >
           <small className="text-center my-3">

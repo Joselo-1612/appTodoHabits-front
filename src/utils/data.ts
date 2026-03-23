@@ -19,3 +19,13 @@ export const type_recurrence = [
     "mensual",
     "personalizado"
 ]
+
+export const days_of_week = [
+    "lunes",
+    "martes",
+    "miércoles",
+    "jueves",
+    "viernes",
+    "sábado",
+    "domingo"
+];

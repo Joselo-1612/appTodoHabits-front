@@ -20,3 +20,6 @@ export const habitsCompleteDoneSkippedRequest = async (habitId: number, date: st
     return await clientAuth.get(`${BASE_PATH_HABIT_COMPLETE}/done_skipped/${habitId}?date=${date}`);
 }
 
+export const habitDeleteRequest = async (habitId: number) => {
+    return await clientAuth.delete(`${BASE_PATH_HABIT}/delete/${habitId}`);
+}
