@@ -1,6 +1,7 @@
 import { Table, ProgressBar, Form } from "react-bootstrap";
-import { FaCalendarDays, FaCalendarDay, FaBarsProgress, FaFilePen } from "react-icons/fa6";
+import { FaCalendarDays, FaCalendarDay, FaBarsProgress } from "react-icons/fa6";
 import { getDateFormat } from "../../utils/date";
+// import 'react-calendar/dist/Calendar.css';
 
 interface Props {
   habits: any[];
@@ -11,7 +12,7 @@ interface Props {
 const HabitsWeekTable = ({ habits, habitsComplete, handleDoneSkipped }: Props) => {
 
   return (
-    <section className="container p-4 mb-4 rounded border">
+    <section className="container p-4 mb-4 rounded border" hidden={habits.length === 0}>
       <div className="d-flex align-items-center gap-3 mb-4">
         <FaCalendarDays />
         <h5 className="p-0 m-0">Esta semana</h5>

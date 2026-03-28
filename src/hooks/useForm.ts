@@ -1,4 +1,5 @@
 import { useState,ChangeEvent } from "react";
+import { getFormatDateTime } from "../utils/date";
 
 export const useForm = <T extends object>(initialValue: T) => {
 
@@ -12,7 +13,7 @@ export const useForm = <T extends object>(initialValue: T) => {
     });
   };
 
-  const handleAddDaysCheckbox = (e: ChangeEvent<HTMLInputElement>) => {
+  const handleAddMultiCheckbox = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value, checked } = e.target;
     const currentFilters: string[] = form[name as keyof typeof form] as string[];
     const updatedFilters = checked ? [...currentFilters, value] : currentFilters.filter(item => item !== value);
@@ -21,30 +22,42 @@ export const useForm = <T extends object>(initialValue: T) => {
       [name]: updatedFilters
     });
   };
-//   const handleFilter = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-//     const { name, value } = e.target;
-//     setForm({
-//       ...form,
-//       filters: {
-//         ...form.filters,
-//         [name]: [value]
-//       }
-//     });
-//   };
 
-//   const handleCheckbox = (e: ChangeEvent<HTMLInputElement>) => {
-//     const { name, value, checked } = e.target;
-//     const currentFilters: string[] = form.filters[name] || [];
-//     const updatedFilters = checked ? [...currentFilters, value] : currentFilters.filter(item => item !== value);
-//     setForm({
-//       ...form,
-//       filters: {
-//         ...form.filters,
-//         [name]: updatedFilters
-//       }
-//     });
-//   };
+  const handleAddOnlyCheckbox = (e: ChangeEvent<HTMLInputElement>) => {
+    const { name, value, checked } = e.target;
+    const currentFilters: string[] = form[name as keyof typeof form] as string[];
+    const updatedFilters = checked ? [value] : currentFilters.filter(item => item !== value);
+    setForm({
+      ...form,
+      [name]: updatedFilters
+    });
+  };
 
+  const handleAddSwitch = (e: ChangeEvent<HTMLInputElement>) => {
+    const { name, checked } = e.target;
+    setForm({
+      ...form,
+      [name]: checked ? 1 : 0
+    });
+  };
+
+  const handleAddDate = (e: ChangeEvent<HTMLInputElement>) => {
+    const { name, value, type } = e.target;
+    let dateFinal;
+
+    if (type === "date") {
+
+    }
+
+    if (type === "time") {
+      dateFinal = getFormatDateTime(value);
+    }
+
+    setForm({
+      ...form,
+      [name]: dateFinal
+    });
+  };
 
   const handlePagination = (pageNumber: number) => {
     setForm({
@@ -58,6 +71,9 @@ export const useForm = <T extends object>(initialValue: T) => {
     setForm,
     handleChange,
     handlePagination,
-    handleAddDaysCheckbox
+    handleAddOnlyCheckbox,
+    handleAddMultiCheckbox,
+    handleAddSwitch,
+    handleAddDate
   };
 };

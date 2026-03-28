@@ -2,7 +2,7 @@ import { FaAlignLeft } from "react-icons/fa";
 import { Badge, Button } from "react-bootstrap";
 import { BsPencilSquare, BsPlusCircle, BsTrash } from "react-icons/bs";
 import { HabitJson } from "../../interfaces/Habit";
-import HabitNew from "./HabitNew";
+import HabitModal from "./HabitModal";
 import { useUtil } from "../../hooks/useUtil";
 import { useState } from "react";
 
@@ -48,7 +48,7 @@ const HabitsList: React.FC<HabitsListProps> = ({ habits, refresh }) => {
           <span>Nuevo</span>
         </Button>
       </div>
-      <HabitNew
+      <HabitModal
         show={show}
         onClose={showInactive}
         refresh={refresh}

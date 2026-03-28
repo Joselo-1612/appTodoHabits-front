@@ -4,6 +4,8 @@ import { habitDeleteRequest, habitRegisterRequest } from "../../services/habit";
 import { HabitJson, HabitRegisterJson } from "../../interfaces/Habit";
 import { useForm } from "../../hooks/useForm";
 import { useEffect } from "react";
+// import { Calendar } from "react-calendar/src/index.js";
+
 
 interface IHabitNew{
   show: boolean,
@@ -13,16 +15,17 @@ interface IHabitNew{
   refresh: () => void
 }
 
-const HabitNew: React.FC<IHabitNew> = ({ show, onClose, refresh, selectedHabit, isNewHabit }) => {
+const HabitModal: React.FC<IHabitNew> = ({ show, onClose, refresh, selectedHabit, isNewHabit }) => {
 
-  const InitialHabitRegisterJson = {
+  const InitialHabitRegisterJson: HabitRegisterJson = {
     hab_name: "",
     hab_description: "",
     hab_type_recurrence: "",
-    hab_days_of_week: []
+    hab_days_of_week: [],
+    hab_is_pinned: 1
   }
 
-  const { form, setForm, handleChange, handleAddDaysCheckbox } = useForm<HabitRegisterJson>(InitialHabitRegisterJson);
+  const { form, setForm, handleChange, handleAddMultiCheckbox, handleAddOnlyCheckbox, handleAddSwitch, handleAddDate } = useForm<HabitRegisterJson>(InitialHabitRegisterJson);
 
   const handleRegister = async () => {
     await habitRegisterRequest(form);
@@ -40,6 +43,7 @@ const HabitNew: React.FC<IHabitNew> = ({ show, onClose, refresh, selectedHabit, 
     setForm(InitialHabitRegisterJson);
   }, [onClose]);
 
+  console.log("valor de form", form);
 
   return (
     <div
@@ -140,9 +144,38 @@ const HabitNew: React.FC<IHabitNew> = ({ show, onClose, refresh, selectedHabit, 
                     ))}
                   </Form.Select>
                 </Form.Group>
+                <Form.Group className="my-3" controlId="formPlaintextHorario">
+                  <Form.Label className="fs-6 fw-bold d-flex align-items-center justify-content-between">
+                    <small>Horario</small>
+                    <Form.Check
+                      style={{ fontSize: "15px" }}
+                      className="fw-bold my-0"
+                      type="switch"
+                      label="¿Es hora fija?"
+                      name="hab_is_pinned"
+                      checked={Boolean(form.hab_is_pinned)}
+                      onChange={handleAddSwitch}
+                      disabled={
+                        form.hab_type_recurrence === type_recurrence[1] ||
+                        form.hab_type_recurrence === type_recurrence[2]
+                      }
+                    />
+                  </Form.Label>
+                  <Form.Control
+                    className="w-50"
+                    type="time"
+                    placeholder="Horario"
+                    name="hab_schedule"
+                    onChange={handleAddDate}
+                  />
+                </Form.Group>
+                <Form.Group>{/* <Calendar /> */}</Form.Group>
                 <Form.Group
                   className="mt-3"
-                  hidden={form.hab_type_recurrence !== "personalizado"}
+                  hidden={
+                    form.hab_type_recurrence !== "personalizado" &&
+                    form.hab_type_recurrence !== "semanal"
+                  }
                 >
                   <Form.Label className="fs-6 fw-bold">
                     <small>Elige los días de la semana</small>
@@ -154,14 +187,35 @@ const HabitNew: React.FC<IHabitNew> = ({ show, onClose, refresh, selectedHabit, 
                         className="mx-2 mt-1"
                         style={{ fontSize: "15px" }}
                         label={type.substring(0, 3)}
-                        type="checkbox"
+                        type={
+                          form.hab_type_recurrence === "personalizado"
+                            ? "checkbox"
+                            : "radio"
+                        }
                         value={type}
                         name="hab_days_of_week"
-                        onChange={handleAddDaysCheckbox}
+                        onChange={
+                          form.hab_type_recurrence === "personalizado"
+                            ? handleAddOnlyCheckbox
+                            : handleAddMultiCheckbox
+                        }
                         id={`inline-${type}`}
                       />
                     ))}
                   </div>
+                </Form.Group>
+                <Form.Group
+                  className="mt-3"
+                  hidden={form.hab_type_recurrence !== "mensual"}
+                >
+                  <Form.Label className="fs-6 fw-bold">
+                    <small>Elige la fecha mensual</small>
+                    <small className="text-danger"> (*)</small>
+                  </Form.Label>
+                  <Form.Control
+                    type="date"
+                    placeholder="Mensual"
+                  />
                 </Form.Group>
               </Form>
             </Modal.Body>
@@ -192,4 +246,4 @@ const HabitNew: React.FC<IHabitNew> = ({ show, onClose, refresh, selectedHabit, 
   );
 };
 
-export default HabitNew;
+export default HabitModal;
