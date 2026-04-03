@@ -1,5 +1,5 @@
 import { useState,ChangeEvent } from "react";
-import { getFormatDateTime } from "../utils/date";
+import { getDayDate, getFormatDateTime } from "../utils/date";
 
 export const useForm = <T extends object>(initialValue: T) => {
 
@@ -46,7 +46,7 @@ export const useForm = <T extends object>(initialValue: T) => {
     let dateFinal;
 
     if (type === "date") {
-
+      dateFinal = [getDayDate(value)];
     }
 
     if (type === "time") {

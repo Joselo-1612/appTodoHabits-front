@@ -59,8 +59,8 @@ const HabitsList: React.FC<HabitsListProps> = ({ habits, refresh }) => {
         {habits?.map((habit: any) => (
           <li key={habit.id} className="col-12 col-md-3 mb-4">
             <div className="d-flex align-items-center gap-1">
-              <BsPencilSquare />
-              <BsTrash onClick={() => handleDeleteHabit(habit)}/>
+              <BsPencilSquare style={{cursor: "pointer"}} />
+              <BsTrash onClick={() => handleDeleteHabit(habit)} style={{cursor: "pointer"}}/>
               <span className="fw-2">
                 {habit.hab_name}
                 <Badge pill bg="light" text="dark">

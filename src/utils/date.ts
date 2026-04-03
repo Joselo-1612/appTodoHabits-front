@@ -1,4 +1,4 @@
-import { months } from "./data";
+import { days_of_week, months } from "./data";
 
 export const getDateFormat = (date: string) => {
 
@@ -29,4 +29,12 @@ export const getFormatDateTime = (time: string) => {
     String(now.getHours()).padStart(2, "0") + ":" +
     String(now.getMinutes()).padStart(2, "0") + ":" +
     String(now.getSeconds()).padStart(2, "0");
+}
+
+export const getDayDate = (date: string) => {
+
+  const dateFormat = new Date(date + "T00:00:00");
+  const dia = dateFormat.getDay();
+
+  return days_of_week[dia-1];
 }
