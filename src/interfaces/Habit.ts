@@ -23,3 +23,8 @@ export interface HabitCompleteDetail {
     hac_date: string,
     hac_id: number
 }
+
+export interface ReportDate {
+    from: string;
+    to: string;
+}

@@ -1,4 +1,5 @@
 import ProtectedRoute from '../components/ProtectedRoute'
+import HabitDetailPage from '../pages/HabitDetailPage'
 import HabitPage from '../pages/HabitPage'
 import LoginPage from '../pages/LoginPage'
 
@@ -18,6 +19,7 @@ const App = () => {
 
         <Route element={<ProtectedRoute isAllowed={!!sessionToken} />}>
           <Route path="/habitos" element={<HabitPage />} />
+          <Route path="/habito/:id" element={<HabitDetailPage />} />
         </Route>
       </Routes>
     </BrowserRouter>

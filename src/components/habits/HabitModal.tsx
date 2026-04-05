@@ -56,6 +56,9 @@ const HabitModal: React.FC<IHabitNew> = ({ show, onClose, refresh, selectedHabit
     }
   }, [form.hab_type_recurrence])
 
+  console.log("valor-de-form", form);
+
+
   return (
     <div
       className="modal show"

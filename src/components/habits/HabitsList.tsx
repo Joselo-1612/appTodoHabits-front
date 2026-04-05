@@ -5,6 +5,7 @@ import { HabitJson } from "../../interfaces/Habit";
 import HabitModal from "./HabitModal";
 import { useUtil } from "../../hooks/useUtil";
 import { useState } from "react";
+import { Link } from "react-router-dom";
 
 interface HabitsListProps {
   habits: HabitJson[];
@@ -57,9 +58,11 @@ const HabitsList: React.FC<HabitsListProps> = ({ habits, refresh }) => {
       />
       <ul className="row list-unstyled">
         {habits?.map((habit: any) => (
-          <li key={habit.id} className="col-12 col-md-3 mb-4">
+          <li key={habit.hab_id} className="col-12 col-md-3 mb-4">
             <div className="d-flex align-items-center gap-1">
-              <BsPencilSquare style={{cursor: "pointer"}} />
+              <Link to={`/habito/${habit.hab_id}`}>
+                <BsPencilSquare style={{cursor: "pointer", color:"#003049"}} />
+              </Link>
               <BsTrash onClick={() => handleDeleteHabit(habit)} style={{cursor: "pointer"}}/>
               <span className="fw-2">
                 {habit.hab_name}
