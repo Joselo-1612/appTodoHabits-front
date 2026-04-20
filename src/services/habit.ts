@@ -8,6 +8,10 @@ export const habitsListRequest = async () => {
     return  await clientAuth.get(`${BASE_PATH_HABIT}/list`);
 }
 
+export const reportCountDoneHabit = async (startDate: string, endDate: string, habitId: number) => {
+    return  await clientAuth.get(`${BASE_PATH_HABIT}/report/${startDate}/${endDate}/${habitId}`);
+}
+
 export const habitRegisterRequest = async (habitData: HabitJson) => {
     return await clientAuth.post(`${BASE_PATH_HABIT}/register`, habitData);
 }
