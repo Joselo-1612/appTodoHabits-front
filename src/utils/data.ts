@@ -23,7 +23,7 @@ export const type_recurrence = [
 export const days_of_week = [
     "lunes",
     "martes",
-    "miércoles",
+    "miercoles",
     "jueves",
     "viernes",
     "sábado",

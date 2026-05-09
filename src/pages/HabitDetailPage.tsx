@@ -8,9 +8,11 @@ import { useParams } from "react-router-dom";
 import { habitDetailRequest, reportCountDoneHabit } from "../services/habit";
 import { getFirstAndLastDayInMonth } from "../utils/date";
 import { AiOutlineAlignLeft, AiOutlineFieldTime } from "react-icons/ai";
-import { BsPencilSquare, BsTrash } from "react-icons/bs";
+import { BsPencilSquare, BsPlusCircle, BsTrash } from "react-icons/bs";
 import { capitalize } from "../utils/util";
-import { Badge } from "react-bootstrap";
+import { Badge, Button } from "react-bootstrap";
+import HabitModal from "../components/habits/HabitModal";
+import { useUtil } from "../hooks/useUtil";
 
 const initialReportDate: ReportDate = {
   from: getFirstAndLastDayInMonth().firstDay,
@@ -26,7 +28,7 @@ const HabitDetailPage = () => {
   const [habitDetail, setHabitDetail] = useState<HabitJson | null>(null);
   const [listHabitsDays, setListHabitsDays] = useState<HabitDay[] | null>(null);
   const { id } = useParams<{ id: string }>();
-
+  const {show, showActive, showInactive} = useUtil();
 
   const handleRefresh = () => {
     setRefreshPage(!refreshPage);
@@ -40,7 +42,7 @@ const HabitDetailPage = () => {
   const handleDetailHabit = async () => {
     const data = await habitDetailRequest(Number(id));
     setHabitDetail(data.data.data.detailHabit);
-    setListHabitsDays(data.data.data.listDaysHabit);
+    setListHabitsDays(data.data.data.listDaysOfWeek);
   }
 
   useEffect(() => {
@@ -53,27 +55,48 @@ const HabitDetailPage = () => {
     if (id) {
       handleDetailHabit();
     }
-  }, [id]);
+  }, [id, refreshPage]);
 
   return (
     <LayoutMain>
       <div className="container p-4 my-4 rounded border">
+      <HabitModal
+        show={show}
+        onClose={showInactive}
+        refresh={handleRefresh}
+        selectedHabit={habitDetail}
+        isNewHabit={true}
+      />
         <section>
           <div className="border-bottom pb-2 mb-3">
-            <div className="d-flex align-items-center">
-              <h4>Habito: {habitDetail?.hab_name}</h4>
-              <Badge pill bg="light" text="dark" className="ms-2">
-                {habitDetail?.hab_type_recurrence}
-              </Badge>
-              {habitDetail?.hab_is_pinned ? (
-                <span
-                  className="badge text-dark"
-                  style={{ backgroundColor: "#f8f5e4" }}
-                >
-                  <AiOutlineFieldTime />
-                  {habitDetail?.hab_schedule}
-                </span>
-              ) : null}
+            <div className="d-flex align-items-center justify-content-between">
+              <div className="d-flex align-items-center">
+                <h4>Habito: {habitDetail?.hab_name}</h4>
+                <Badge pill bg="light" text="dark" className="ms-2">
+                  {habitDetail?.hab_type_recurrence}
+                </Badge>
+                {habitDetail?.hab_is_pinned ? (
+                  <span
+                    className="badge text-dark"
+                    style={{ backgroundColor: "#f8f5e4" }}
+                  >
+                    <AiOutlineFieldTime />
+                    {habitDetail?.hab_schedule}
+                  </span>
+                ) : null}
+              </div>
+              <Button
+                size="sm"
+                className="d-flex align-items-center gap-1"
+                style={{ backgroundColor: "#f77f00", border: "none" }}
+                onClick={() => {
+                  // setIsNewHabit(true);
+                  showActive();
+                }}
+              >
+                <BsPlusCircle />
+                <span>Editar</span>
+              </Button>
             </div>
             <small>{habitDetail?.hab_description}</small>
           </div>
@@ -100,12 +123,12 @@ const HabitDetailPage = () => {
                       />
                       <br />
                       <small className="mt-2">
-                        <AiOutlineAlignLeft /> {day.had_description}
+                        <AiOutlineFieldTime />
+                        {day.had_schedule ?? "No disponible"}
                       </small>
                       <br />
                       <small className="mt-2">
-                        <AiOutlineFieldTime />
-                        {day.had_schedule ?? "No disponible"}
+                        <AiOutlineAlignLeft /> {day.had_description}
                       </small>
                     </li>
                   ))}

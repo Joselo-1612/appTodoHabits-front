@@ -4,7 +4,6 @@ import { habitDeleteRequest, habitRegisterRequest } from "../../services/habit";
 import { HabitJson, HabitRegisterJson } from "../../interfaces/Habit";
 import { useForm } from "../../hooks/useForm";
 import { useEffect } from "react";
-// import { Calendar } from "react-calendar/src/index.js";
 
 
 interface IHabitNew{
@@ -22,10 +21,19 @@ const HabitModal: React.FC<IHabitNew> = ({ show, onClose, refresh, selectedHabit
     hab_description: "",
     hab_type_recurrence: "",
     hab_days_of_week: [],
-    hab_is_pinned: 1
+    hab_is_pinned: 1,
+    hab_schedule: ""
   }
 
-  const { form, setForm, handleChange, handleAddMultiCheckbox, handleAddOnlyCheckbox, handleAddSwitch, handleAddDate } = useForm<HabitRegisterJson>(InitialHabitRegisterJson);
+  const {
+    form,
+    setForm,
+    handleChange,
+    handleAddMultiCheckbox,
+    handleAddOnlyCheckbox,
+    handleAddSwitch,
+    handleAddDate,
+  } = useForm<HabitRegisterJson>(selectedHabit || InitialHabitRegisterJson);
 
   const handleRegister = async () => {
     await habitRegisterRequest(form);
@@ -44,8 +52,12 @@ const HabitModal: React.FC<IHabitNew> = ({ show, onClose, refresh, selectedHabit
   }
 
   useEffect(() => {
-    setForm(InitialHabitRegisterJson);
-  }, [onClose]);
+    if (selectedHabit) {
+      setForm(selectedHabit);
+    } else {
+      setForm(InitialHabitRegisterJson);
+    }
+  }, [selectedHabit]);
 
   useEffect(() => {
     if (form.hab_type_recurrence == "semanal" || form.hab_type_recurrence == "mensual") {
@@ -55,8 +67,6 @@ const HabitModal: React.FC<IHabitNew> = ({ show, onClose, refresh, selectedHabit
       });
     }
   }, [form.hab_type_recurrence])
-
-  console.log("valor-de-form", form);
 
 
   return (
@@ -188,6 +198,7 @@ const HabitModal: React.FC<IHabitNew> = ({ show, onClose, refresh, selectedHabit
                     type="time"
                     placeholder="Horario"
                     name="hab_schedule"
+                    value={form.hab_schedule}
                     onChange={handleAddDate}
                   />
                 </Form.Group>
@@ -214,6 +225,7 @@ const HabitModal: React.FC<IHabitNew> = ({ show, onClose, refresh, selectedHabit
                         label={type.substring(0, 3)}
                         type={IsPersonalizedRecurrence() ? "checkbox" : "radio"}
                         value={type}
+                        checked={form.hab_days_of_week?.includes(type)}
                         name="hab_days_of_week"
                         onChange={
                           IsPersonalizedRecurrence()
