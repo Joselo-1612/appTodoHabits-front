@@ -36,8 +36,8 @@ export interface ReportHabit {
 }
 
 export interface HabitDay {
-    had_id:number,
-    had_hab_id: number,
+    had_id?:number,
+    had_hab_id?: number,
     had_day: string;
     had_description: string;
     had_schedule: string;

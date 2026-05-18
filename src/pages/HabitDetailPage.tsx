@@ -10,9 +10,10 @@ import { getFirstAndLastDayInMonth } from "../utils/date";
 import { AiOutlineAlignLeft, AiOutlineFieldTime } from "react-icons/ai";
 import { BsPencilSquare, BsPlusCircle, BsTrash } from "react-icons/bs";
 import { capitalize } from "../utils/util";
-import { Badge, Button } from "react-bootstrap";
+import { Badge, Breadcrumb, Button } from "react-bootstrap";
 import HabitModal from "../components/habits/HabitModal";
 import { useUtil } from "../hooks/useUtil";
+import HabitDayModal from "../components/habits/HabitDayModal";
 
 const initialReportDate: ReportDate = {
   from: getFirstAndLastDayInMonth().firstDay,
@@ -29,6 +30,8 @@ const HabitDetailPage = () => {
   const [listHabitsDays, setListHabitsDays] = useState<HabitDay[] | null>(null);
   const { id } = useParams<{ id: string }>();
   const {show, showActive, showInactive} = useUtil();
+  const {show: showHabitDay, showActive: showHabitDayActive, showInactive: showHabitDayInactive} = useUtil();
+
 
   const handleRefresh = () => {
     setRefreshPage(!refreshPage);
@@ -57,16 +60,30 @@ const HabitDetailPage = () => {
     }
   }, [id, refreshPage]);
 
+
   return (
     <LayoutMain>
+      <Breadcrumb className="px-1 pt-3">
+        <Breadcrumb.Item href="/habitos">
+          <span className="text-dark" style={{ color: "#ff6600 !important" }}>Habitos</span>
+        </Breadcrumb.Item>
+        <Breadcrumb.Item active>Detalle</Breadcrumb.Item>
+      </Breadcrumb>
       <div className="container p-4 my-4 rounded border">
-      <HabitModal
-        show={show}
-        onClose={showInactive}
-        refresh={handleRefresh}
-        selectedHabit={habitDetail}
-        isNewHabit={true}
-      />
+        <HabitModal
+          show={show}
+          onClose={showInactive}
+          refresh={handleRefresh}
+          selectedHabit={habitDetail}
+          isNewHabit={true}
+        />
+        <HabitDayModal
+          show={showHabitDay}
+          onClose={showHabitDayInactive}
+          refresh={handleRefresh}
+          selectedHabit={null}
+          isNewHabit={true}
+        />
         <section>
           <div className="border-bottom pb-2 mb-3">
             <div className="d-flex align-items-center justify-content-between">
@@ -102,11 +119,24 @@ const HabitDetailPage = () => {
           </div>
           <div className="row mt-5">
             {!habitDetail?.hab_is_pinned ? (
-              <div className="col-md-4 border-end">
-                <h5>
-                  <b>Actividades:</b>
-                </h5>
-                <br />
+              <div className="col-md-4 border-end pl-0">
+                <div className="d-flex justify-content-between align-items-center">
+                    <h5 className="mb-0">
+                      <b>Actividades:</b>
+                    </h5>
+                    <Button
+                      size="sm"
+                      className="d-flex align-items-center"
+                      style={{ backgroundColor: "#f77f00", border: "none" }}
+                      onClick={() => {
+                        // setIsNewHabit(true);
+                        showHabitDayActive();
+                      }}
+                    >
+                      <BsPlusCircle />
+                    </Button>
+                  <br />
+                </div>
                 <ul>
                   {listHabitsDays?.map((day) => (
                     <li key={day.had_id} className="mb-4">
