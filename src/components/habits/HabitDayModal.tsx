@@ -1,6 +1,6 @@
 import { Button, Form, Modal } from "react-bootstrap";
-import { days_of_week, type_recurrence } from "../../utils/data";
-import { habitDeleteRequest, habitRegisterRequest } from "../../services/habit";
+import { days_of_week } from "../../utils/data";
+import { habitDayDeleteRequest, habitDayRegisterUpdateRequest } from "../../services/habit";
 import { HabitDay } from "../../interfaces/Habit";
 import { useForm } from "../../hooks/useForm";
 import { useEffect } from "react";
@@ -10,43 +10,38 @@ interface IHabitNew{
   show: boolean,
   selectedHabit: HabitDay | null,
   isNewHabit: boolean,
+  habitId: number | null,
   onClose: () => void,
   refresh: () => void
 }
 
-const HabitDayModal: React.FC<IHabitNew> = ({ show, onClose, refresh, selectedHabit, isNewHabit }) => {
+const HabitDayModal: React.FC<IHabitNew> = ({ show, onClose, refresh, selectedHabit, isNewHabit, habitId }) => {
 
   const InitialHabitRegisterJson: HabitDay = {
     had_day: "",
     had_description: "",
-    had_schedule: ""
+    had_schedule: "",
+    had_hab_id: habitId ?? 0
   }
 
   const {
     form,
     setForm,
     handleChange,
-    handleAddMultiCheckbox,
-    handleAddOnlyCheckbox,
-    handleAddSwitch,
-    handleAddDate,
+    handleAddDate
   } = useForm<HabitDay>(selectedHabit || InitialHabitRegisterJson);
 
-  // const handleRegister = async () => {
-  //   await habitRegisterRequest(form);
-  //   await onClose();
-  //   await refresh();
-  // }
-
-  const handleDeleteHabit = async (idHabit: number) => {
-    await habitDeleteRequest(idHabit);
+  const handleRegister = async () => {
+    await habitDayRegisterUpdateRequest(form);
     await onClose();
     await refresh();
   }
 
-  // const IsPersonalizedRecurrence = () => {
-  //   return form.hab_type_recurrence === "personalizado";
-  // }
+  const handleDeleteHabit = async (idHabit: number) => {
+    await habitDayDeleteRequest(idHabit);
+    await onClose();
+    await refresh();
+  }
 
   useEffect(() => {
     if (selectedHabit) {
@@ -55,16 +50,6 @@ const HabitDayModal: React.FC<IHabitNew> = ({ show, onClose, refresh, selectedHa
       setForm(InitialHabitRegisterJson);
     }
   }, [selectedHabit]);
-
-  // useEffect(() => {
-  //   if (form.hab_type_recurrence == "semanal" || form.hab_type_recurrence == "mensual") {
-  //     setForm({
-  //       ...form,
-  //       hab_is_pinned: 1
-  //     });
-  //   }
-  // }, [form.hab_type_recurrence])
-
 
   return (
     <div
@@ -96,7 +81,7 @@ const HabitDayModal: React.FC<IHabitNew> = ({ show, onClose, refresh, selectedHa
                 className="text-white border-0"
                 size="sm"
                 style={{ backgroundColor: "#f77f00" }}
-                // onClick={() => handleDeleteHabit(selectedHabit?.hab_id ?? 0)}
+                onClick={() => handleDeleteHabit(selectedHabit?.had_id ?? 0)}
               >
                 Eliminar
               </Button>
@@ -120,8 +105,8 @@ const HabitDayModal: React.FC<IHabitNew> = ({ show, onClose, refresh, selectedHa
                   </Form.Label>
                   <Form.Select
                     size="sm"
-                    name="hab_type_recurrence"
-                    // value={form.hab_type_recurrence}
+                    name="had_day"
+                    value={form.had_day}
                     onChange={handleChange}
                   >
                     <option>Seleccionar Dia</option>
@@ -144,8 +129,8 @@ const HabitDayModal: React.FC<IHabitNew> = ({ show, onClose, refresh, selectedHa
                     size="sm"
                     rows={3}
                     placeholder="Descripción de la actividad"
-                    name="hab_description"
-                    // value={form.hab_description}
+                    name="had_description"
+                    value={form.had_description}
                     onChange={handleChange}
                   />
                 </Form.Group>
@@ -162,8 +147,8 @@ const HabitDayModal: React.FC<IHabitNew> = ({ show, onClose, refresh, selectedHa
                     className="w-50"
                     type="time"
                     placeholder="Horario"
-                    name="hab_schedule"
-                    // value={form.hab_schedule}
+                    name="had_schedule"
+                    defaultValue={form.had_schedule}
                     onChange={handleAddDate}
                   />
                 </Form.Group>
@@ -184,7 +169,7 @@ const HabitDayModal: React.FC<IHabitNew> = ({ show, onClose, refresh, selectedHa
                 className="text-white border-0"
                 size="sm"
                 style={{ backgroundColor: "#f77f00" }}
-                // onClick={handleRegister}
+                onClick={handleRegister}
               >
                 Guardar cambios
               </Button>

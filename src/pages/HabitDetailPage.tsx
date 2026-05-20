@@ -28,6 +28,8 @@ const HabitDetailPage = () => {
   const [reportHabits, setReportHabits] = useState<ReportHabit | null>(null);
   const [habitDetail, setHabitDetail] = useState<HabitJson | null>(null);
   const [listHabitsDays, setListHabitsDays] = useState<HabitDay[] | null>(null);
+  const [habitDay, setHabitDay] = useState<HabitDay | null>(null);
+  const [isNewHabit, setIsNewHabit] = useState<boolean>(true);
   const { id } = useParams<{ id: string }>();
   const {show, showActive, showInactive} = useUtil();
   const {show: showHabitDay, showActive: showHabitDayActive, showInactive: showHabitDayInactive} = useUtil();
@@ -65,7 +67,9 @@ const HabitDetailPage = () => {
     <LayoutMain>
       <Breadcrumb className="px-1 pt-3">
         <Breadcrumb.Item href="/habitos">
-          <span className="text-dark" style={{ color: "#ff6600 !important" }}>Habitos</span>
+          <span className="text-dark" style={{ color: "#ff6600 !important" }}>
+            Habitos
+          </span>
         </Breadcrumb.Item>
         <Breadcrumb.Item active>Detalle</Breadcrumb.Item>
       </Breadcrumb>
@@ -81,8 +85,9 @@ const HabitDetailPage = () => {
           show={showHabitDay}
           onClose={showHabitDayInactive}
           refresh={handleRefresh}
-          selectedHabit={null}
-          isNewHabit={true}
+          selectedHabit={habitDay}
+          isNewHabit={isNewHabit}
+          habitId={Number(id)}
         />
         <section>
           <div className="border-bottom pb-2 mb-3">
@@ -107,7 +112,7 @@ const HabitDetailPage = () => {
                 className="d-flex align-items-center gap-1"
                 style={{ backgroundColor: "#f77f00", border: "none" }}
                 onClick={() => {
-                  // setIsNewHabit(true);
+                  setIsNewHabit(true);
                   showActive();
                 }}
               >
@@ -120,36 +125,47 @@ const HabitDetailPage = () => {
           <div className="row mt-5">
             {!habitDetail?.hab_is_pinned ? (
               <div className="col-md-4 border-end pl-0">
-                <div className="d-flex justify-content-between align-items-center">
-                    <h5 className="mb-0">
-                      <b>Actividades:</b>
-                    </h5>
-                    <Button
-                      size="sm"
-                      className="d-flex align-items-center"
-                      style={{ backgroundColor: "#f77f00", border: "none" }}
-                      onClick={() => {
-                        // setIsNewHabit(true);
-                        showHabitDayActive();
-                      }}
-                    >
-                      <BsPlusCircle />
-                    </Button>
+                <div className="d-flex justify-content-start align-items-center gap-2">
+                  <Button
+                    size="sm"
+                    className="d-flex align-items-center"
+                    style={{ backgroundColor: "#f77f00", border: "none" }}
+                    onClick={() => {
+                      setIsNewHabit(true);
+                      showHabitDayActive();
+                    }}
+                  >
+                    <BsPlusCircle />
+                  </Button>
+                  <h5 className="mb-0">
+                    <b>Actividades:</b>
+                  </h5>
                   <br />
                 </div>
                 <ul>
-                  {listHabitsDays?.map((day) => (
-                    <li key={day.had_id} className="mb-4">
+                  {listHabitsDays?.map((day: HabitDay) => (
+                    <li key={day.had_id} className="my-4">
                       {capitalize(day.had_day)}
                       <BsPencilSquare
                         style={{
                           cursor: "pointer",
                           color: "#003049",
-                          marginLeft: "8px",
+                          marginLeft: "12px",
+                          marginRight: "4px"
+                        }}
+                        onClick={() => {
+                          setIsNewHabit(true);
+                          setHabitDay(day);
+                          showHabitDayActive();
                         }}
                       />
                       <BsTrash
-                        style={{ cursor: "pointer", color: "#003049" }}
+                        style={{ cursor: "pointer", color: "#003049"}}
+                        onClick={() => {
+                          setIsNewHabit(false);
+                          setHabitDay(day);
+                          showHabitDayActive();
+                        }}
                       />
                       <br />
                       <small className="mt-2">

@@ -1,8 +1,9 @@
 import { clientAuth } from "../config/clientAxios";
-import { HabitJson } from "../interfaces/Habit";
+import { HabitDay, HabitJson } from "../interfaces/Habit";
 
 const BASE_PATH_HABIT = 'habit';
 const BASE_PATH_HABIT_COMPLETE = 'habit-complete';
+const BASE_PATH_HABIT_DAY = 'habit-day';
 
 export const habitsListRequest = async () => {
     return  await clientAuth.get(`${BASE_PATH_HABIT}/list`);
@@ -30,4 +31,12 @@ export const habitDeleteRequest = async (habitId: number) => {
 
 export const habitDetailRequest = async (habitId: number) => {
     return await clientAuth.get(`${BASE_PATH_HABIT}/detail/${habitId}`);
+}
+
+export const habitDayRegisterUpdateRequest = async (habitData: HabitDay) => {
+    return await clientAuth.post(`${BASE_PATH_HABIT_DAY}/register-update`, habitData);
+}
+
+export const habitDayDeleteRequest = async (habitDayId: number) => {
+    return await clientAuth.delete(`${BASE_PATH_HABIT_DAY}/delete/${habitDayId}`);
 }

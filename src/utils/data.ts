@@ -26,6 +26,6 @@ export const days_of_week = [
     "miercoles",
     "jueves",
     "viernes",
-    "sábado",
+    "sabado",
     "domingo"
 ];
