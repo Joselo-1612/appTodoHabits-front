@@ -3,7 +3,7 @@ import { days_of_week } from "../../utils/data";
 import { habitDayDeleteRequest, habitDayRegisterUpdateRequest } from "../../services/habit";
 import { HabitDay } from "../../interfaces/Habit";
 import { useForm } from "../../hooks/useForm";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 
 interface IHabitNew{
@@ -30,17 +30,26 @@ const HabitDayModal: React.FC<IHabitNew> = ({ show, onClose, refresh, selectedHa
     handleChange,
     handleAddDate
   } = useForm<HabitDay>(selectedHabit || InitialHabitRegisterJson);
+  const [error, setError] = useState<string | null>(null);
 
   const handleRegister = async () => {
-    await habitDayRegisterUpdateRequest(form);
-    await onClose();
-    await refresh();
+    try{
+      await habitDayRegisterUpdateRequest(form);
+      setForm(InitialHabitRegisterJson);
+      setError(null);
+      onClose();
+      refresh();
+    } catch (error: any) {
+      setError(error?.response?.data.message || "Error al registrar la actividad");
+      throw error;
+    }
   }
 
   const handleDeleteHabit = async (idHabit: number) => {
     await habitDayDeleteRequest(idHabit);
-    await onClose();
-    await refresh();
+    setForm(InitialHabitRegisterJson);
+    onClose();
+    refresh();
   }
 
   useEffect(() => {
@@ -50,6 +59,10 @@ const HabitDayModal: React.FC<IHabitNew> = ({ show, onClose, refresh, selectedHa
       setForm(InitialHabitRegisterJson);
     }
   }, [selectedHabit]);
+
+  useEffect(() => {
+    setError(null);
+  },[show])
 
   return (
     <div
@@ -92,7 +105,11 @@ const HabitDayModal: React.FC<IHabitNew> = ({ show, onClose, refresh, selectedHa
             <Modal.Header closeButton>
               <Modal.Title className="fs-5">Nuevo Actividad</Modal.Title>
             </Modal.Header>
-
+            {error && (
+              <div className="alert alert-danger m-0 p-2 rounded-0" role="alert">
+                <small>{error}</small>
+              </div>
+            )}
             <Modal.Body>
               <Form>
                 <Form.Group
