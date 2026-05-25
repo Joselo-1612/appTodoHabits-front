@@ -40,3 +40,9 @@ export const habitDayRegisterUpdateRequest = async (habitData: HabitDay) => {
 export const habitDayDeleteRequest = async (habitDayId: number) => {
     return await clientAuth.delete(`${BASE_PATH_HABIT_DAY}/delete/${habitDayId}`);
 }
+
+export const habitScheduleRequest = async () => {
+  return await clientAuth.get(`${BASE_PATH_HABIT}/schedule`, {
+    responseType: "blob",
+  });
+};

@@ -21,7 +21,8 @@ const HabitDayModal: React.FC<IHabitNew> = ({ show, onClose, refresh, selectedHa
     had_day: "",
     had_description: "",
     had_schedule: "",
-    had_hab_id: habitId ?? 0
+    had_hab_id: habitId ?? 0,
+    had_is_new: true
   }
 
   const {
@@ -54,7 +55,10 @@ const HabitDayModal: React.FC<IHabitNew> = ({ show, onClose, refresh, selectedHa
 
   useEffect(() => {
     if (selectedHabit) {
-      setForm(selectedHabit);
+      setForm({
+        ...selectedHabit,
+        had_is_new: false,
+      });
     } else {
       setForm(InitialHabitRegisterJson);
     }

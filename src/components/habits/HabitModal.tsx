@@ -4,6 +4,7 @@ import { habitDeleteRequest, habitRegisterRequest } from "../../services/habit";
 import { HabitJson, HabitRegisterJson } from "../../interfaces/Habit";
 import { useForm } from "../../hooks/useForm";
 import { useEffect } from "react";
+import { getFormatDateToTime } from "../../utils/date";
 
 
 interface IHabitNew{
@@ -198,7 +199,7 @@ const HabitModal: React.FC<IHabitNew> = ({ show, onClose, refresh, selectedHabit
                     type="time"
                     placeholder="Horario"
                     name="hab_schedule"
-                    defaultValue={form.hab_schedule}
+                    defaultValue={getFormatDateToTime(form.hab_schedule)}
                     onChange={handleAddDate}
                   />
                 </Form.Group>

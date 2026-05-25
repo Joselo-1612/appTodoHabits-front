@@ -52,3 +52,10 @@ export const getFirstAndLastDayInMonth = () => {
   const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0);
   return { firstDay: formatDateYYYYMMDD(firstDay), lastDay: formatDateYYYYMMDD(lastDay) };
 }
+
+export const getFormatDateToTime = (fecha: string | undefined) => {
+
+  if (!fecha) return "";
+
+  return fecha.split(' ')[1].slice(0, 5);
+}

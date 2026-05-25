@@ -6,6 +6,8 @@ import HabitModal from "./HabitModal";
 import { useUtil } from "../../hooks/useUtil";
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { AiOutlineFileDone } from "react-icons/ai";
+import { habitScheduleRequest } from "../../services/habit";
 
 interface HabitsListProps {
   habits: HabitJson[];
@@ -24,6 +26,25 @@ const HabitsList: React.FC<HabitsListProps> = ({ habits, refresh }) => {
     showActive();
   }
 
+const handleDownloadSchedule = async () => {
+  try {
+    const response = await habitScheduleRequest();
+
+    const url = window.URL.createObjectURL(new Blob([response.data]));
+
+    const link = document.createElement("a");
+    link.href = url;
+    link.setAttribute("download", "horario-habitos.pdf");
+
+    document.body.appendChild(link);
+    link.click();
+
+    link.remove();
+    window.URL.revokeObjectURL(url);
+  } catch (error) {
+    console.error("Error fetching habit schedule:", error);
+  }
+};
   return (
     <section className="container p-4 my-4 rounded border">
       <div className="d-flex align-items-center justify-content-between gap-3 mb-5">
@@ -36,18 +57,30 @@ const HabitsList: React.FC<HabitsListProps> = ({ habits, refresh }) => {
             </Badge>
           </div>
         </div>
-        <Button
-          size="sm"
-          className="d-flex align-items-center gap-1"
-          style={{ backgroundColor: "#f77f00", border: "none" }}
-          onClick={() => {
-            setIsNewHabit(true);
-            showActive();
-          }}
-        >
-          <BsPlusCircle />
-          <span>Nuevo</span>
-        </Button>
+        <div className="d-flex gap-2">
+          <Button
+            size="sm"
+            className="d-flex align-items-center gap-1 btn-success"
+            onClick={() => {
+              handleDownloadSchedule()
+            }}
+          >
+            <AiOutlineFileDone />
+            <span>Horario</span>
+          </Button>
+          <Button
+            size="sm"
+            className="d-flex align-items-center gap-1"
+            style={{ backgroundColor: "#f77f00", border: "none" }}
+            onClick={() => {
+              setIsNewHabit(true);
+              showActive();
+            }}
+          >
+            <BsPlusCircle />
+            <span>Nuevo</span>
+          </Button>
+        </div>
       </div>
       <HabitModal
         show={show}

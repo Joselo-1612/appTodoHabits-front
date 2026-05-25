@@ -6,7 +6,7 @@ import { useForm } from "../hooks/useForm";
 import { Bar, BarChart, CartesianGrid, Tooltip, XAxis, YAxis } from "recharts";
 import { useParams } from "react-router-dom";
 import { habitDetailRequest, reportCountDoneHabit } from "../services/habit";
-import { getFirstAndLastDayInMonth } from "../utils/date";
+import { getFirstAndLastDayInMonth, getFormatDateToTime } from "../utils/date";
 import { AiOutlineAlignLeft, AiOutlineFieldTime } from "react-icons/ai";
 import { BsPencilSquare, BsPlusCircle, BsTrash } from "react-icons/bs";
 import { capitalize } from "../utils/util";
@@ -103,7 +103,7 @@ const HabitDetailPage = () => {
                     style={{ backgroundColor: "#f8f5e4" }}
                   >
                     <AiOutlineFieldTime />
-                    {habitDetail?.hab_schedule}
+                    {getFormatDateToTime(habitDetail?.hab_schedule)}
                   </span>
                 ) : null}
               </div>

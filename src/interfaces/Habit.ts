@@ -41,4 +41,5 @@ export interface HabitDay {
     had_day: string;
     had_description: string;
     had_schedule: string;
+    had_is_new?: boolean;
 }
