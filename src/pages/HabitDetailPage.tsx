@@ -50,6 +50,17 @@ const HabitDetailPage = () => {
     setListHabitsDays(data.data.data.listDaysOfWeek);
   }
 
+  const handleSchudle = (dateIni:string, dateEnd:string) => {
+
+    if (!dateIni && !dateEnd) {
+      return "No disponible";
+    } else if (dateIni && dateEnd) {
+      return `${dateIni} - ${dateEnd}`;
+    } else {
+      return `${dateIni}`
+    }
+  }
+
   useEffect(() => {
     if (form.from && form.to && id) {
       handleReport();
@@ -103,7 +114,7 @@ const HabitDetailPage = () => {
                     style={{ backgroundColor: "#f8f5e4" }}
                   >
                     <AiOutlineFieldTime />
-                    {getFormatDateToTime(habitDetail?.hab_schedule)}
+                    {getFormatDateToTime(habitDetail?.hab_schedule_ini)} - {getFormatDateToTime(habitDetail?.hab_schedule_end)}
                   </span>
                 ) : null}
               </div>
@@ -170,7 +181,7 @@ const HabitDetailPage = () => {
                       <br />
                       <small className="mt-2">
                         <AiOutlineFieldTime />
-                        {day.had_schedule ?? "No disponible"}
+                        {handleSchudle(day.had_schedule_ini, day.had_schedule_end)}
                       </small>
                       <br />
                       <small className="mt-2">

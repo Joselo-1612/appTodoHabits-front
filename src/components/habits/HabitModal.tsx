@@ -23,7 +23,8 @@ const HabitModal: React.FC<IHabitNew> = ({ show, onClose, refresh, selectedHabit
     hab_type_recurrence: "",
     hab_days_of_week: [],
     hab_is_pinned: 1,
-    hab_schedule: ""
+    hab_schedule_ini: "",
+    hab_schedule_end: ""
   }
 
   const {
@@ -184,25 +185,44 @@ const HabitModal: React.FC<IHabitNew> = ({ show, onClose, refresh, selectedHabit
                     ))}
                   </Form.Select>
                 </Form.Group>
+                <div className="row">
                 <Form.Group
-                  className="my-3"
+                  className="my-3 col-md-6"
                   hidden={!Boolean(form.hab_is_pinned)}
                 >
                   <Form.Label className="fs-6 fw-bold d-flex align-items-center justify-content-between">
                     <div>
-                      <small>Horario</small>
+                      <small>Horario Inicial</small>
                       <small className="text-danger"> (*)</small>
                     </div>
                   </Form.Label>
                   <Form.Control
-                    className="w-50"
                     type="time"
-                    placeholder="Horario"
-                    name="hab_schedule"
-                    defaultValue={getFormatDateToTime(form.hab_schedule)}
+                    placeholder="Horario Inicial"
+                    name="hab_schedule_ini"
+                    defaultValue={getFormatDateToTime(form.hab_schedule_ini)}
                     onChange={handleAddDate}
                   />
                 </Form.Group>
+                <Form.Group
+                  className="my-3 col-md-6"
+                  hidden={!Boolean(form.hab_is_pinned)}
+                >
+                  <Form.Label className="fs-6 fw-bold d-flex align-items-center justify-content-between">
+                    <div>
+                      <small>Horario Final</small>
+                      <small className="text-danger"> (*)</small>
+                    </div>
+                  </Form.Label>
+                  <Form.Control
+                    type="time"
+                    placeholder="Horario Final"
+                    name="hab_schedule_end"
+                    defaultValue={getFormatDateToTime(form.hab_schedule_end)}
+                    onChange={handleAddDate}
+                  />
+                </Form.Group>
+                </div>
                 <Form.Group
                   className="mt-3"
                   hidden={

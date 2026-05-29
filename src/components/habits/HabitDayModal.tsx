@@ -20,7 +20,8 @@ const HabitDayModal: React.FC<IHabitNew> = ({ show, onClose, refresh, selectedHa
   const InitialHabitRegisterJson: HabitDay = {
     had_day: "",
     had_description: "",
-    had_schedule: "",
+    had_schedule_ini: "",
+    had_schedule_end: "",
     had_hab_id: habitId ?? 0,
     had_is_new: true
   }
@@ -155,24 +156,42 @@ const HabitDayModal: React.FC<IHabitNew> = ({ show, onClose, refresh, selectedHa
                     onChange={handleChange}
                   />
                 </Form.Group>
-                <Form.Group
-                  className="my-3"
-                >
-                  <Form.Label className="fs-6 fw-bold d-flex align-items-center justify-content-between">
-                    <div>
-                      <small>Horario</small>
-                      <small className="text-danger"> (*)</small>
-                    </div>
-                  </Form.Label>
-                  <Form.Control
-                    className="w-50"
-                    type="time"
-                    placeholder="Horario"
-                    name="had_schedule"
-                    defaultValue={form.had_schedule}
-                    onChange={handleAddDate}
-                  />
-                </Form.Group>
+                <div className="row">
+                  <Form.Group
+                    className="my-3 col-6"
+                  >
+                    <Form.Label className="fs-6 fw-bold d-flex align-items-center justify-content-between">
+                      <div>
+                        <small>Horario de inicio</small>
+                        <small className="text-danger"> (*)</small>
+                      </div>
+                    </Form.Label>
+                    <Form.Control
+                      type="time"
+                      placeholder="Horario"
+                      name="had_schedule_ini"
+                      defaultValue={form.had_schedule_ini}
+                      onChange={handleAddDate}
+                    />
+                  </Form.Group>
+                  <Form.Group
+                    className="my-3 col-6"
+                  >
+                    <Form.Label className="fs-6 fw-bold d-flex align-items-center justify-content-between">
+                      <div>
+                        <small>Horario de fin</small>
+                        <small className="text-danger"> (*)</small>
+                      </div>
+                    </Form.Label>
+                    <Form.Control
+                      type="time"
+                      placeholder="Horario"
+                      name="had_schedule_end"
+                      defaultValue={form.had_schedule_end}
+                      onChange={handleAddDate}
+                    />
+                  </Form.Group>
+                </div>
               </Form>
             </Modal.Body>
 
