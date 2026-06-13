@@ -7,7 +7,7 @@ import { Bar, BarChart, CartesianGrid, Tooltip, XAxis, YAxis } from "recharts";
 import { useParams } from "react-router-dom";
 import { habitDetailRequest, reportCountDoneHabit } from "../services/habit";
 import { getFirstAndLastDayInMonth, getFormatDateToTime } from "../utils/date";
-import { AiOutlineAlignLeft, AiOutlineFieldTime } from "react-icons/ai";
+import { AiOutlineAlignLeft, AiOutlineCarryOut, AiOutlineControl, AiOutlineFieldTime } from "react-icons/ai";
 import { BsPencilSquare, BsPlusCircle, BsTrash } from "react-icons/bs";
 import { capitalize } from "../utils/util";
 import { Badge, Breadcrumb, Button } from "react-bootstrap";
@@ -106,16 +106,23 @@ const HabitDetailPage = () => {
               <div className="d-flex align-items-center">
                 <h4>Habito: {habitDetail?.hab_name}</h4>
                 <Badge pill bg="light" text="dark" className="ms-2">
+                  <AiOutlineControl />
                   {habitDetail?.hab_type_recurrence}
                 </Badge>
                 {habitDetail?.hab_is_pinned ? (
-                  <span
-                    className="badge text-dark"
-                    style={{ backgroundColor: "#f8f5e4" }}
-                  >
-                    <AiOutlineFieldTime />
-                    {getFormatDateToTime(habitDetail?.hab_schedule_ini)} - {getFormatDateToTime(habitDetail?.hab_schedule_end)}
-                  </span>
+                  <div>
+                    <span
+                      className="badge text-dark ms-2"
+                      style={{ backgroundColor: "#f8f5e4" }}
+                    >
+                      <AiOutlineFieldTime />
+                      {getFormatDateToTime(habitDetail?.hab_schedule_ini)} - {getFormatDateToTime(habitDetail?.hab_schedule_end)}
+                    </span>
+                    <Badge pill bg="light" text="dark" className="ms-2">
+                      <AiOutlineCarryOut />&nbsp;
+                      {listHabitsDays?.map((day) => day.had_day).join(", ") || 'Todos los dias'}
+                    </Badge>
+                  </div>                  
                 ) : null}
               </div>
               <Button

@@ -26,25 +26,26 @@ const HabitsList: React.FC<HabitsListProps> = ({ habits, refresh }) => {
     showActive();
   }
 
-const handleDownloadSchedule = async () => {
-  try {
-    const response = await habitScheduleRequest();
+  const handleDownloadSchedule = async () => {
+    try {
+      const response = await habitScheduleRequest();
 
-    const url = window.URL.createObjectURL(new Blob([response.data]));
+      const url = window.URL.createObjectURL(new Blob([response.data]));
 
-    const link = document.createElement("a");
-    link.href = url;
-    link.setAttribute("download", "horario-habitos.pdf");
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", "horario-habitos.pdf");
 
-    document.body.appendChild(link);
-    link.click();
+      document.body.appendChild(link);
+      link.click();
 
-    link.remove();
-    window.URL.revokeObjectURL(url);
-  } catch (error) {
-    console.error("Error fetching habit schedule:", error);
-  }
-};
+      link.remove();
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error("Error fetching habit schedule:", error);
+    }
+  };
+
   return (
     <section className="container p-4 my-4 rounded border">
       <div className="d-flex align-items-center justify-content-between gap-3 mb-5">

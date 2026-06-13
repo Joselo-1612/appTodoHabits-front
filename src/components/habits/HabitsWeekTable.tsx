@@ -1,7 +1,6 @@
 import { Table, ProgressBar, Form } from "react-bootstrap";
 import { FaCalendarDays, FaCalendarDay, FaBarsProgress } from "react-icons/fa6";
 import { getDateFormat } from "../../utils/date";
-// import 'react-calendar/dist/Calendar.css';
 
 interface Props {
   habits: any[];

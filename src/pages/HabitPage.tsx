@@ -11,6 +11,7 @@ const HabitPage = () => {
   const [habits, setHabits] = useState<any[]>();
   const [habitsComplete, setHabitsComplete] = useState<any[]>();
   const [refreshPage, setRefreshPage] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const getListHabists = async () => {
     try {
@@ -36,10 +37,13 @@ const HabitPage = () => {
       if (habitId && date) {
         const response = await habitsCompleteDoneSkippedRequest(habitId, date);
         console.log("response de habitsCompleteDoneSkippedRequest", response);
+        setError(null);
         setRefreshPage(!refreshPage);
       }
-    } catch (error) {
-      console.error("Error fetching habits complete:", error);
+    } catch (error:any) {
+
+      setError(error?.response?.data.message || "Error al registrar la actividad");
+      throw error;
     }
   }
 
@@ -55,6 +59,7 @@ const HabitPage = () => {
   return (
     <LayoutMain>
       <HabitsList habits={habits || []} refresh={handleRefresh}/>
+      {error && <div className="alert alert-danger fw-bold" style={{ fontSize: "14px" }}>{error}</div>}
       <HabitsWeekTable
         habits={habits || []}
         habitsComplete={habitsComplete}
