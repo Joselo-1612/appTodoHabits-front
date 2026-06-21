@@ -9,3 +9,211 @@
 .custom-checkbox input:checked {
   accent-color: #e9ecef;
 }
+
+.habits-calendar-icon {
+  align-items: center;
+  background: white;
+  border-radius: 50%;
+  color: dark;
+  display: inline-flex;
+  height: 34px;
+  justify-content: center;
+  width: 34px;
+}
+
+.habits-google-calendar {
+  background: #fff;
+  border: 1px solid #dadce0 !important;
+  border-radius: 8px;
+  color: #3c4043;
+  font-family: inherit;
+  overflow: hidden;
+}
+
+.habits-google-calendar .react-calendar__navigation {
+  align-items: center;
+  border-bottom: 1px solid #dadce0;
+  display: flex;
+  gap: 4px;
+  height: 52px;
+  margin: 0;
+  padding: 8px 10px;
+}
+
+.habits-google-calendar .react-calendar__navigation button {
+  background: transparent;
+  border: 0;
+  border-radius: 50%;
+  color: #3c4043;
+  font-size: 18px;
+  font-weight: 500;
+  min-width: 38px;
+}
+
+.habits-google-calendar .react-calendar__navigation button:enabled:hover,
+.habits-google-calendar .react-calendar__navigation button:enabled:focus {
+  background: white;
+}
+
+.habits-google-calendar .react-calendar__navigation__label {
+  border-radius: 8px !important;
+  flex-grow: 0 !important;
+  font-size: 18px !important;
+  margin: 0 auto;
+  padding: 0 14px;
+}
+
+.habits-google-calendar .react-calendar__month-view__weekdays {
+  background: #fff;
+  border-bottom: 1px solid #dadce0;
+  color: #5f6368;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+.habits-google-calendar .react-calendar__month-view__weekdays__weekday {
+  border-right: 1px solid #dadce0;
+  padding: 10px 6px;
+  text-align: center;
+}
+
+.habits-google-calendar .react-calendar__month-view__weekdays__weekday:last-child {
+  border-right: 0;
+}
+
+.habits-google-calendar .react-calendar__month-view__weekdays abbr {
+  text-decoration: none;
+}
+
+.habits-google-calendar .react-calendar__month-view__days {
+  align-items: stretch;
+}
+
+.habits-google-calendar .react-calendar__tile {
+  background: #fff;
+  border: 0;
+  border-bottom: 1px solid #dadce0;
+  border-right: 1px solid #dadce0;
+  color: #3c4043;
+  display: flex;
+  flex-direction: column;
+  min-height: 132px;
+  padding: 8px 8px 6px;
+  text-align: left;
+}
+
+.habits-google-calendar .react-calendar__tile:nth-child(7n) {
+  border-right: 0;
+}
+
+.habits-google-calendar .react-calendar__tile:enabled:hover,
+.habits-google-calendar .react-calendar__tile:enabled:focus {
+  background: #f8fafd;
+}
+
+.habits-google-calendar .react-calendar__tile abbr {
+  align-items: center;
+  border-radius: 50%;
+  display: inline-flex;
+  font-size: 12px;
+  height: 28px;
+  justify-content: center;
+  margin-left: auto;
+  width: 28px;
+}
+
+.habits-google-calendar .react-calendar__tile--now {
+  background: #fff;
+}
+
+.habits-google-calendar .react-calendar__tile--now abbr {
+  background: #1a73e8;
+  color: #fff;
+  font-weight: 700;
+}
+
+.habits-google-calendar .react-calendar__tile--active {
+  background: #fff;
+  color: #3c4043;
+}
+
+.habits-google-calendar .react-calendar__month-view__days__day--neighboringMonth {
+  background: #fafafa;
+  color: #9aa0a6;
+}
+
+.habit-calendar-events {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 6px;
+  max-width: 100%;
+  min-width: 0;
+}
+
+.habit-calendar-event {
+  background: #e8f0fe;
+  border-left: 3px solid #028090;
+  border-radius: 4px;
+  color: #028090;
+  cursor: pointer;
+  min-width: 0;
+  padding: 3px 6px;
+}
+
+.habit-calendar-event:hover {
+  background: #d2e3fc;
+}
+
+.habit-calendar-event.is-complete {
+  background: #f8f5e4;
+  border-left-color: #f77f00;
+  color: #137333;
+}
+
+.habit-calendar-check {
+  align-items: center;
+  display: flex;
+  gap: 5px;
+  margin: 0;
+  min-width: 0;
+}
+
+.habit-calendar-check .form-check-input {
+  flex: 0 0 auto;
+  height: 13px;
+  margin: 0;
+  width: 13px;
+}
+
+.habit-calendar-check .form-check-label {
+  cursor: pointer;
+  display: block;
+  font-size: 12px;
+  line-height: 1.2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@media (max-width: 768px) {
+  .habits-google-calendar .react-calendar__navigation__label {
+    font-size: 15px !important;
+    padding: 0 6px;
+  }
+
+  .habits-google-calendar .react-calendar__tile {
+    min-height: 104px;
+    padding: 6px 4px;
+  }
+
+  .habit-calendar-event {
+    padding: 2px 4px;
+  }
+
+  .habit-calendar-check .form-check-label {
+    font-size: 11px;
+  }
+}

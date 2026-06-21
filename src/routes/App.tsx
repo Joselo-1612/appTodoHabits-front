@@ -4,6 +4,7 @@ import HabitPage from '../pages/HabitPage'
 import LoginPage from '../pages/LoginPage'
 
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import ProjectPage from '../pages/ProjectPage'
 
 const App = () => {
 
@@ -20,6 +21,7 @@ const App = () => {
         <Route element={<ProtectedRoute isAllowed={!!sessionToken} />}>
           <Route path="/habitos" element={<HabitPage />} />
           <Route path="/habito/:id" element={<HabitDetailPage />} />
+          <Route path="/proyectos" element={<ProjectPage />} />
         </Route>
       </Routes>
     </BrowserRouter>

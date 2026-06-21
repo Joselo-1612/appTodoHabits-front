@@ -3,7 +3,7 @@ import LayoutMain from "../layouts/LayoutMain";
 import Form from "react-bootstrap/esm/Form";
 import { HabitDay, HabitJson, ReportDate, ReportHabit } from "../interfaces/Habit";
 import { useForm } from "../hooks/useForm";
-import { Bar, BarChart, CartesianGrid, Tooltip, XAxis, YAxis } from "recharts";
+import { Bar, BarChart, CartesianGrid, LabelList, Tooltip, XAxis, YAxis } from "recharts";
 import { useParams } from "react-router-dom";
 import { habitDetailRequest, reportCountDoneHabit } from "../services/habit";
 import { getFirstAndLastDayInMonth, getFormatDateToTime } from "../utils/date";
@@ -77,7 +77,7 @@ const HabitDetailPage = () => {
   return (
     <LayoutMain>
       <Breadcrumb className="px-1 pt-3">
-        <Breadcrumb.Item href="/habitos">
+        <Breadcrumb.Item href="/habitos" active>
           <span className="text-dark" style={{ color: "#ff6600 !important" }}>
             Habitos
           </span>
@@ -122,7 +122,7 @@ const HabitDetailPage = () => {
                       <AiOutlineCarryOut />&nbsp;
                       {listHabitsDays?.map((day) => day.had_day).join(", ") || 'Todos los dias'}
                     </Badge>
-                  </div>                  
+                  </div>
                 ) : null}
               </div>
               <Button

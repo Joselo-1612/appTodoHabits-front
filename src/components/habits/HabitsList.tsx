@@ -61,18 +61,19 @@ const HabitsList: React.FC<HabitsListProps> = ({ habits, refresh }) => {
         <div className="d-flex gap-2">
           <Button
             size="sm"
-            className="d-flex align-items-center gap-1 btn-success"
+            className="d-flex align-items-center gap-1 border-0"
+            style={{backgroundColor:"#f8f5e4", color:"#003049" }}
             onClick={() => {
               handleDownloadSchedule()
             }}
           >
-            <AiOutlineFileDone />
+            <AiOutlineFileDone color="#f77f00"/>
             <span>Horario</span>
           </Button>
           <Button
             size="sm"
             className="d-flex align-items-center gap-1"
-            style={{ backgroundColor: "#f77f00", border: "none" }}
+            style={{ backgroundColor: "#f77f00",  border:"1px solid #f8f5e4" }}
             onClick={() => {
               setIsNewHabit(true);
               showActive();
