@@ -1,14 +1,19 @@
 import { ReactNode } from "react";
 import { Nav } from "react-bootstrap";
-import { BsCalculator, BsFilterLeft } from "react-icons/bs";
+import { BsCalculator, BsFilterLeft, BsPlusCircle } from "react-icons/bs";
 import "../index.css"; // estilos personalizados
 import { Link } from "react-router-dom";
+import { useUtil } from "../hooks/useUtil";
+import ProjectModal from "../components/projects/ProjectModal";
 
 interface ContainerProps {
     children: ReactNode;
 }
 
 const LayoutMain: React.FC<ContainerProps> = ({ children }) => {
+
+    const {show, showActive, showInactive} = useUtil();
+
     return (
       <>
         <div className="row min-vh-100 m-0 p-0">
@@ -36,7 +41,20 @@ const LayoutMain: React.FC<ContainerProps> = ({ children }) => {
             <hr />
             <small className="text-secondary mb-3">
               <strong>Mis Proyectos </strong>
+              <BsPlusCircle onClick={() => showActive()}/>
             </small>
+                      {/* <Button
+                        size="sm"
+                        className="d-flex align-items-center gap-1"
+                        style={{ backgroundColor: "#f77f00",  border:"1px solid #f8f5e4" }}
+                        onClick={() => {
+                          setIsNewHabit(true);
+                          showActive();
+                        }}
+                      >
+                        <BsPlusCircle />
+                        <span>Nuevo</span>
+                      </Button> */}
             <Nav.Link as={Link} to="/proyectos" className="text-dark">
               <BsFilterLeft />
               <small>Personal</small>
@@ -45,6 +63,8 @@ const LayoutMain: React.FC<ContainerProps> = ({ children }) => {
           </Nav>
 
           <main className="col-12 col-md-10">{children}</main>
+
+          <ProjectModal show={show} onClose={() => {}} refresh={() => {}} isNewProject={true} />
         </div>
       </>
     );
