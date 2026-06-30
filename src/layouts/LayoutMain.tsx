@@ -43,28 +43,16 @@ const LayoutMain: React.FC<ContainerProps> = ({ children }) => {
               <strong>Mis Proyectos </strong>
               <BsPlusCircle onClick={() => showActive()}/>
             </small>
-                      {/* <Button
-                        size="sm"
-                        className="d-flex align-items-center gap-1"
-                        style={{ backgroundColor: "#f77f00",  border:"1px solid #f8f5e4" }}
-                        onClick={() => {
-                          setIsNewHabit(true);
-                          showActive();
-                        }}
-                      >
-                        <BsPlusCircle />
-                        <span>Nuevo</span>
-                      </Button> */}
             <Nav.Link as={Link} to="/proyectos" className="text-dark">
               <BsFilterLeft />
               <small>Personal</small>
             </Nav.Link>
             <hr />
           </Nav>
-
           <main className="col-12 col-md-10">{children}</main>
-
-          <ProjectModal show={show} onClose={() => {}} refresh={() => {}} isNewProject={true} />
+          <div className="position-absolute">
+            <ProjectModal show={show} onClose={showInactive} refresh={() => {}} isNewProject={true} />
+          </div>
         </div>
       </>
     );

@@ -5,6 +5,7 @@ import { HabitJson, HabitRegisterJson } from "../../interfaces/Habit";
 import { useForm } from "../../hooks/useForm";
 import { useEffect } from "react";
 import { getFormatDateToTime } from "../../utils/date";
+import { ProjectRegisterJson } from "../../interfaces/Project";
 
 
 interface IProjectNew{
@@ -17,14 +18,16 @@ interface IProjectNew{
 
 const ProjectModal: React.FC<IProjectNew> = ({ show, onClose, refresh }) => {
 
-  const InitialHabitRegisterJson: HabitRegisterJson = {
-    hab_name: "",
-    hab_description: "",
-    hab_type_recurrence: "",
-    hab_days_of_week: [],
-    hab_is_pinned: 1,
-    hab_schedule_ini: "",
-    hab_schedule_end: ""
+  const InitialHabitRegisterJson: ProjectRegisterJson = {
+    pro_name: "",
+    pro_description: "",
+    pro_priority: 1,
+    pro_date_start: "",
+    pro_date_end: "",
+    pro_prg_id: undefined,
+    pro_use_id: 1,
+    pro_status: undefined,
+    pro_group: undefined
   }
 
   const {
@@ -35,10 +38,10 @@ const ProjectModal: React.FC<IProjectNew> = ({ show, onClose, refresh }) => {
     handleAddOnlyCheckbox,
     handleAddSwitch,
     handleAddDate,
-  } = useForm<HabitRegisterJson>(InitialHabitRegisterJson);
+  } = useForm<ProjectRegisterJson>(InitialHabitRegisterJson);
 
   const handleRegister = async () => {
-    await habitRegisterRequest(form);
+    await projectRegisterRequest(form);
     await onClose();
     await refresh();
   }
@@ -61,14 +64,6 @@ const ProjectModal: React.FC<IProjectNew> = ({ show, onClose, refresh }) => {
 //     }
 //   }, [selectedHabit]);
 
-  useEffect(() => {
-    if (form.hab_type_recurrence == "semanal" || form.hab_type_recurrence == "mensual") {
-      setForm({
-        ...form,
-        hab_is_pinned: 1
-      });
-    }
-  }, [form.hab_type_recurrence])
 
 
   return (
@@ -76,229 +71,127 @@ const ProjectModal: React.FC<IProjectNew> = ({ show, onClose, refresh }) => {
       className="modal show"
       style={{ display: "block", position: "initial" }}
     >
-        <h1>Hola mundo</h1>
-      {/* <Modal show={show} onHide={onClose} centered>
-        {!isNewHabit && selectedHabit?.hab_id ? (
-          <>
-            <Modal.Header closeButton>
-              <Modal.Title className="fs-5">Eliminar Habito</Modal.Title>
-            </Modal.Header>
+      <Modal show={show} onHide={onClose} centered>
+        <Modal.Header closeButton>
+          <Modal.Title className="fs-5">Nuevo Protecto</Modal.Title>
+        </Modal.Header>
 
-            <Modal.Body>
-              <div>
-                ¿Desea eliminar este hábito "{selectedHabit?.hab_name}"?
-              </div>
-            </Modal.Body>
-
-            <Modal.Footer>
-              <Button
-                variant="secondary"
+        <Modal.Body>
+          <Form>
+            <Form.Group
+              className="mb-3"
+              controlId="exampleForm.ControlInput1"
+            >
+              <Form.Label className="fs-6 fw-bold">
+                <small>Nombre</small>
+                <small className="text-danger"> (*)</small>
+              </Form.Label>
+              <Form.Control
                 size="sm"
-                onClick={onClose}
-                style={{ backgroundColor: "#003049" }}
-              >
-                Cerrar
-              </Button>
-              <Button
-                variant="warning"
-                className="text-white border-0"
+                type="text"
+                placeholder="Nombre del proyecto"
+                name="pro_name"
+                value={form.pro_name}
+                onChange={handleChange}
+              />
+            </Form.Group>
+            <Form.Group
+              className="mb-3"
+              controlId="exampleForm.ControlTextarea1"
+            >
+              <Form.Label className="fs-6 fw-bold">
+                <small>Descripción</small>
+              </Form.Label>
+              <Form.Control
+                as="textarea"
                 size="sm"
-                style={{ backgroundColor: "#f77f00" }}
-                onClick={() => handleDeleteHabit(selectedHabit?.hab_id ?? 0)}
-              >
-                Eliminar
-              </Button>
-            </Modal.Footer>
-          </>
-        ) : (
-          <>
-            <Modal.Header closeButton>
-              <Modal.Title className="fs-5">Nuevo Habito</Modal.Title>
-            </Modal.Header>
-
-            <Modal.Body>
-              <Form>
-                <Form.Group
-                  className="mb-3"
-                  controlId="exampleForm.ControlInput1"
-                >
-                  <Form.Label className="fs-6 fw-bold">
-                    <small>Nombre</small>
-                    <small className="text-danger"> (*)</small>
-                  </Form.Label>
-                  <Form.Control
-                    size="sm"
-                    type="text"
-                    placeholder="Nombre del habito"
-                    name="hab_name"
-                    value={form.hab_name}
-                    onChange={handleChange}
-                  />
-                </Form.Group>
-                <Form.Group
-                  className="mb-3"
-                  controlId="exampleForm.ControlTextarea1"
-                >
-                  <Form.Label className="fs-6 fw-bold">
-                    <small>Descripción</small>
-                  </Form.Label>
-                  <Form.Control
-                    as="textarea"
-                    size="sm"
-                    rows={3}
-                    placeholder="Descripción del habito"
-                    name="hab_description"
-                    value={form.hab_description}
-                    onChange={handleChange}
-                  />
-                </Form.Group>
-                <Form.Group>
-                  <Form.Label className="fs-6 fw-bold d-flex align-items-center justify-content-between">
-                    <div>
-                      <small>Recurrencia</small>
-                      <small className="text-danger"> (*)</small>
-                    </div>
-                    <Form.Check
-                      style={{ fontSize: "15px" }}
-                      className="fw-bold my-0"
-                      type="switch"
-                      label="¿Es hora fija?"
-                      name="hab_is_pinned"
-                      checked={Boolean(form.hab_is_pinned)}
-                      onChange={handleAddSwitch}
-                      disabled={
-                        form.hab_type_recurrence === type_recurrence[1] ||
-                        form.hab_type_recurrence === type_recurrence[2]
-                      }
-                    />
-                  </Form.Label>
-                  <Form.Select
-                    size="sm"
-                    name="hab_type_recurrence"
-                    value={form.hab_type_recurrence}
-                    onChange={handleChange}
-                  >
-                    <option>Seleccionar recurrencia</option>
-                    {type_recurrence.map((type, index) => (
-                      <option key={index} value={type}>
-                        {type}
-                      </option>
-                    ))}
-                  </Form.Select>
-                </Form.Group>
-                <div className="row">
-                <Form.Group
-                  className="my-3 col-md-6"
-                  hidden={!Boolean(form.hab_is_pinned)}
-                >
-                  <Form.Label className="fs-6 fw-bold d-flex align-items-center justify-content-between">
-                    <div>
-                      <small>Horario Inicial</small>
-                      <small className="text-danger"> (*)</small>
-                    </div>
-                  </Form.Label>
-                  <Form.Control
-                    type="time"
-                    placeholder="Horario Inicial"
-                    name="hab_schedule_ini"
-                    defaultValue={getFormatDateToTime(form.hab_schedule_ini)}
-                    onChange={handleAddDate}
-                  />
-                </Form.Group>
-                <Form.Group
-                  className="my-3 col-md-6"
-                  hidden={!Boolean(form.hab_is_pinned)}
-                >
-                  <Form.Label className="fs-6 fw-bold d-flex align-items-center justify-content-between">
-                    <div>
-                      <small>Horario Final</small>
-                      <small className="text-danger"> (*)</small>
-                    </div>
-                  </Form.Label>
-                  <Form.Control
-                    type="time"
-                    placeholder="Horario Final"
-                    name="hab_schedule_end"
-                    defaultValue={getFormatDateToTime(form.hab_schedule_end)}
-                    onChange={handleAddDate}
-                  />
-                </Form.Group>
+                rows={3}
+                placeholder="Descripción del Proyecto"
+                name="pro_description"
+                value={form.pro_description}
+                onChange={handleChange}
+              />
+            </Form.Group>
+            <Form.Group>
+              <Form.Label className="fs-6 fw-bold d-flex align-items-center justify-content-between">
+                <div>
+                  <small>Pertenece a</small>
+                  <small className="text-danger"> (*)</small>
                 </div>
-                <Form.Group
-                  className="mt-3"
-                  hidden={
-                    form.hab_type_recurrence !== "personalizado" &&
-                    form.hab_type_recurrence !== "semanal"
-                  }
-                >
-                  <Form.Label className="fs-6 fw-bold">
-                    <small>
-                      {IsPersonalizedRecurrence()
-                        ? "Elige los días de la semana"
-                        : "Elige un día de la semana"}
-                    </small>
-                    <small className="text-danger"> (*)</small>
-                  </Form.Label>
-                  <div className="d-flex align-items-center rounded">
-                    {days_of_week.map((type) => (
-                      <Form.Check
-                        className="mx-2 mt-1"
-                        style={{ fontSize: "15px" }}
-                        label={type.substring(0, 3)}
-                        type={IsPersonalizedRecurrence() ? "checkbox" : "radio"}
-                        value={type}
-                        checked={form.hab_days_of_week?.includes(type)}
-                        name="hab_days_of_week"
-                        onChange={
-                          IsPersonalizedRecurrence()
-                            ? handleAddMultiCheckbox
-                            : handleAddOnlyCheckbox
-                        }
-                        id={`inline-${type}`}
-                      />
-                    ))}
-                  </div>
-                </Form.Group>
-                <Form.Group
-                  className="mt-3"
-                  hidden={form.hab_type_recurrence !== "mensual"}
-                >
-                  <Form.Label className="fs-6 fw-bold">
-                    <small>Elige la fecha mensual</small>
-                    <small className="text-danger"> (*)</small>
-                  </Form.Label>
-                  <Form.Control
-                    type="date"
-                    placeholder="Mensual"
-                    name="hab_days_of_week"
-                    onChange={handleAddDate}
-                  />
-                </Form.Group>
-              </Form>
-            </Modal.Body>
+              </Form.Label>
+              <Form.Select
+                size="sm"
+                name="pro_group"
+                value={form.pro_group}
+                onChange={handleChange}
+              >
+                <option>Seleccionar grupo</option>
+                {type_recurrence.map((type, index) => (
+                  <option key={index} value={type}>
+                    {type}
+                  </option>
+                ))}
+              </Form.Select>
+            </Form.Group>
+            <div className="row">
+            <Form.Group
+              className="mt-4 mb-2 col-md-6"
+            >
+              <Form.Label className="fs-6 fw-bold d-flex align-items-center justify-content-between">
+                <div>
+                  <small>Fecha Inicial</small>
+                  <small className="text-danger"> (*)</small>
+                </div>
+              </Form.Label>
+              <Form.Control
+                type="date"
+                placeholder="Fecha Inicial"
+                name="pro_date_start"
+                defaultValue={getFormatDateToTime(form.pro_date_start)}
+                onChange={handleAddDate}
+              />
+            </Form.Group>
+            <Form.Group
+              className="mt-4 mb-2 col-md-6"
+            >
+              <Form.Label className="fs-6 fw-bold d-flex align-items-center justify-content-between">
+                <div>
+                  <small>Fecha Final</small>
+                  <small className="text-danger"> (*)</small>
+                </div>
+              </Form.Label>
+              <Form.Control
+                type="date"
+                placeholder="Fecha Final"
+                name="pro_date_end"
+                defaultValue={getFormatDateToTime(form.pro_date_end)}
+                onChange={handleAddDate}
+              />
+            </Form.Group>
+            </div>
+          </Form>
+        </Modal.Body>
 
-            <Modal.Footer>
-              <Button
-                variant="secondary"
-                size="sm"
-                onClick={onClose}
-                style={{ backgroundColor: "#003049" }}
-              >
-                Cerrar
-              </Button>
-              <Button
-                variant="warning"
-                className="text-white border-0"
-                size="sm"
-                style={{ backgroundColor: "#f77f00" }}
-                onClick={handleRegister}
-              >
-                Guardar cambios
-              </Button>
-            </Modal.Footer>
-          </>
-        )}
-      </Modal> */}
+        <Modal.Footer>
+          <Button
+            variant="secondary"
+            size="sm"
+            onClick={onClose}
+            style={{ backgroundColor: "#003049" }}
+          >
+            Cerrar
+          </Button>
+          <Button
+            variant="warning"
+            className="text-white border-0"
+            size="sm"
+            style={{ backgroundColor: "#f77f00" }}
+            onClick={handleRegister}
+          >
+            Guardar cambios
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </div>
   );
 };
