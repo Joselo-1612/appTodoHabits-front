@@ -55,6 +55,9 @@ export const getFirstAndLastDayInMonth = () => {
 
 export const getFormatDateToTime = (fecha: string | undefined) => {
 
+  console.log("val-fecha",fecha);
+  
+
   if (!fecha) return "";
 
   return fecha.split(' ')[1].slice(0, 5);

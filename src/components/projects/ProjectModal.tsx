@@ -1,12 +1,8 @@
 import { Button, Form, Modal } from "react-bootstrap";
-import { days_of_week, type_recurrence } from "../../utils/data";
-import { habitDeleteRequest, habitRegisterRequest } from "../../services/habit";
-import { HabitJson, HabitRegisterJson } from "../../interfaces/Habit";
 import { useForm } from "../../hooks/useForm";
-import { useEffect } from "react";
-import { getFormatDateToTime } from "../../utils/date";
 import { ProjectRegisterJson } from "../../interfaces/Project";
-
+import { projectsCreateRequest, projectsGroupListRequest } from "../../services/project";
+import { useEffect, useState } from "react";
 
 interface IProjectNew{
   show: boolean,
@@ -25,46 +21,41 @@ const ProjectModal: React.FC<IProjectNew> = ({ show, onClose, refresh }) => {
     pro_date_start: "",
     pro_date_end: "",
     pro_prg_id: undefined,
-    pro_use_id: 1,
+    pro_use_id: undefined,
     pro_status: undefined,
-    pro_group: undefined
+    pro_group: ''
   }
 
   const {
     form,
     setForm,
     handleChange,
-    handleAddMultiCheckbox,
-    handleAddOnlyCheckbox,
-    handleAddSwitch,
-    handleAddDate,
   } = useForm<ProjectRegisterJson>(InitialHabitRegisterJson);
 
+  const [listGroups, setListGroups] = useState([]);
+
   const handleRegister = async () => {
-    await projectRegisterRequest(form);
-    await onClose();
-    await refresh();
+    try{
+      await projectsCreateRequest(form);
+      await onClose();
+      await refresh();
+    } catch (error: any) {
+      console.log("error", error?.response?.data.message);
+      throw error;
+    }
   }
 
-  const handleDeleteHabit = async (idHabit: number) => {
-    await habitDeleteRequest(idHabit);
-    await onClose();
-    await refresh();
+  const handleListProjectGroup = async () => {
+    const response = await projectsGroupListRequest();
+    setListGroups(response.data.data);
   }
 
-  const IsPersonalizedRecurrence = () => {
-    return form.hab_type_recurrence === "personalizado";
-  }
-
-//   useEffect(() => {
-//     if (selectedHabit) {
-//       setForm(selectedHabit);
-//     } else {
-//       setForm(InitialHabitRegisterJson);
-//     }
-//   }, [selectedHabit]);
-
-
+  useEffect(() => {
+    if (show) {
+      handleListProjectGroup()
+    }
+    setForm(InitialHabitRegisterJson);
+  }, [show]);
 
   return (
     <div
@@ -75,7 +66,6 @@ const ProjectModal: React.FC<IProjectNew> = ({ show, onClose, refresh }) => {
         <Modal.Header closeButton>
           <Modal.Title className="fs-5">Nuevo Protecto</Modal.Title>
         </Modal.Header>
-
         <Modal.Body>
           <Form>
             <Form.Group
@@ -126,9 +116,9 @@ const ProjectModal: React.FC<IProjectNew> = ({ show, onClose, refresh }) => {
                 onChange={handleChange}
               >
                 <option>Seleccionar grupo</option>
-                {type_recurrence.map((type, index) => (
-                  <option key={index} value={type}>
-                    {type}
+                {listGroups.map((group:any, index) => (
+                  <option key={index} value={group.prg_name}>
+                    {group.prg_name}
                   </option>
                 ))}
               </Form.Select>
@@ -147,8 +137,7 @@ const ProjectModal: React.FC<IProjectNew> = ({ show, onClose, refresh }) => {
                 type="date"
                 placeholder="Fecha Inicial"
                 name="pro_date_start"
-                defaultValue={getFormatDateToTime(form.pro_date_start)}
-                onChange={handleAddDate}
+                onChange={handleChange}
               />
             </Form.Group>
             <Form.Group
@@ -164,14 +153,12 @@ const ProjectModal: React.FC<IProjectNew> = ({ show, onClose, refresh }) => {
                 type="date"
                 placeholder="Fecha Final"
                 name="pro_date_end"
-                defaultValue={getFormatDateToTime(form.pro_date_end)}
-                onChange={handleAddDate}
+                onChange={handleChange}
               />
             </Form.Group>
             </div>
           </Form>
         </Modal.Body>
-
         <Modal.Footer>
           <Button
             variant="secondary"

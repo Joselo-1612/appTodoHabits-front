@@ -6,11 +6,10 @@ export interface ProjectJson {
     pro_date_start: string;
     pro_date_end: string;
     pro_prg_id?: number;
-    pro_use_id: number;
+    pro_use_id?: number;
     pro_status?: string;
 }
 
 export interface ProjectRegisterJson extends ProjectJson {
-    pro_group?: string;
+    pro_group: string;
 }
-
