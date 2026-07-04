@@ -5,6 +5,7 @@ import LoginPage from '../pages/LoginPage'
 
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import ProjectPage from '../pages/ProjectPage'
+import ProjectDetailPage from '../pages/ProjectDetailPage'
 
 const App = () => {
 
@@ -22,6 +23,7 @@ const App = () => {
           <Route path="/habitos" element={<HabitPage />} />
           <Route path="/habito/:id" element={<HabitDetailPage />} />
           <Route path="/proyectos" element={<ProjectPage />} />
+          <Route path="/proyecto/:id" element={<ProjectDetailPage />} />
         </Route>
       </Routes>
     </BrowserRouter>

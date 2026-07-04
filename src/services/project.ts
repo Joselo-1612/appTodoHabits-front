@@ -11,3 +11,7 @@ export const projectsCreateRequest = async (dataProject: ProjectRegisterJson) =>
 export const projectsGroupListRequest = async () => {
     return  await clientAuth.get(`${BASE_PATH_PROJECT_GROUP}/list`);
 }
+
+export const projectListRequest = async () => {
+    return await clientAuth.get(`${BASE_PATH_PROJECT}/list`);
+}

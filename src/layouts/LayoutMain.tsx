@@ -1,10 +1,11 @@
-import { ReactNode } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import { Nav } from "react-bootstrap";
 import { BsCalculator, BsFilterLeft, BsPlusCircle } from "react-icons/bs";
 import "../index.css"; // estilos personalizados
 import { Link } from "react-router-dom";
 import { useUtil } from "../hooks/useUtil";
 import ProjectModal from "../components/projects/ProjectModal";
+import { projectListRequest } from "../services/project";
 
 interface ContainerProps {
     children: ReactNode;
@@ -13,6 +14,24 @@ interface ContainerProps {
 const LayoutMain: React.FC<ContainerProps> = ({ children }) => {
 
     const {show, showActive, showInactive} = useUtil();
+    const [listProject, setListProject] = useState<any[]>([]);
+
+    const handleListProjects = async () => {
+      try {
+        const response = await projectListRequest();
+
+        setListProject(response.data.data);
+      } catch (error) {
+        console.error("Error fetching lista de projects:", error);
+      }
+    };
+
+    useEffect(() => {
+        handleListProjects();
+    }, []);
+
+    console.log("val-listProject", listProject);
+    
 
     return (
       <>
@@ -43,9 +62,20 @@ const LayoutMain: React.FC<ContainerProps> = ({ children }) => {
               <strong>Mis Proyectos </strong>
               <BsPlusCircle onClick={() => showActive()}/>
             </small>
-            <Nav.Link as={Link} to="/proyectos" className="text-dark">
-              <BsFilterLeft />
-              <small>Personal</small>
+            <Nav.Link as={Link} to="/proyectos" className="text-dark m-0  ">
+              {Object.entries(listProject).map(([category, projects]: any) => (
+                <div key={category}>
+                  <BsFilterLeft />
+                  <small>{category}</small><br />
+                  {projects.map((project: any) => (
+                    <Link key={project.pro_id} to={`/proyecto/${project.pro_id}`} style={{ marginLeft: "20px", color:"#003049", textDecoration: "none" }}>
+                      <small style={{ fontSize: "12px" }}>
+                        {project.pro_name}
+                      </small>
+                    </Link>
+                  ))}
+                </div>
+              ))}
             </Nav.Link>
             <hr />
           </Nav>
