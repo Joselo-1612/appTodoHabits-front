@@ -30,9 +30,6 @@ const LayoutMain: React.FC<ContainerProps> = ({ children }) => {
         handleListProjects();
     }, []);
 
-    console.log("val-listProject", listProject);
-    
-
     return (
       <>
         <div className="row min-vh-100 m-0 p-0">

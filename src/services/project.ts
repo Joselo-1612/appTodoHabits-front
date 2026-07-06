@@ -15,3 +15,7 @@ export const projectsGroupListRequest = async () => {
 export const projectListRequest = async () => {
     return await clientAuth.get(`${BASE_PATH_PROJECT}/list`);
 }
+
+export const projectDetailRequest = async (projectId: string) => {
+    return await clientAuth.get(`${BASE_PATH_PROJECT}/detail/${projectId}`);
+}
