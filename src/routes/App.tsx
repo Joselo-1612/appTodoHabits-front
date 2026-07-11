@@ -3,7 +3,7 @@ import HabitDetailPage from '../pages/HabitDetailPage'
 import HabitPage from '../pages/HabitPage'
 import LoginPage from '../pages/LoginPage'
 
-import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import ProjectPage from '../pages/ProjectPage'
 import ProjectDetailPage from '../pages/ProjectDetailPage'
 
@@ -17,6 +17,7 @@ const App = () => {
   return (
     <BrowserRouter>
       <Routes>
+        <Route path="/" element={<Navigate to="/login" replace />} />
         <Route path="/login" element={<LoginPage />} />
 
         <Route element={<ProtectedRoute isAllowed={!!sessionToken} />}>

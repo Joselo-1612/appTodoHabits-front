@@ -508,9 +508,9 @@
 }
 
 .project-board-add-list {
-  background: rgba(255, 255, 255, 0.22);
+  background: #f8fafd;
   border-radius: 8px;
-  color: #ffffff;
+  color: #003049;
   gap: 8px;
   min-height: 44px;
   padding: 0 14px;
@@ -519,7 +519,7 @@
 .project-board-add-list:hover,
 .project-board-actions button:hover,
 .project-board-title button:hover {
-  background: rgba(255, 255, 255, 0.32);
+  background: #dfe1e6;
 }
 
 @media (max-width: 768px) {

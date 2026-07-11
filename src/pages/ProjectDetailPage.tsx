@@ -26,13 +26,43 @@ interface BoardCard {
   members: string[];
 }
 
-interface BoardList {
+interface BoardListOld {
   id: number;
   title: string;
   cards: BoardCard[];
 }
 
-const boardLists: BoardList[] = [
+interface ProjectDetail {
+  pro_id: number;
+  pro_name: string;
+  pro_description: string;
+  pro_priority: string;
+  pro_date_start: string;
+  pro_date_end: string;
+}
+
+interface Section {
+  acs_id: number,
+  acs_name: string,
+  activities: Activity[]
+}
+
+interface Activity {
+  act_id: number,
+  act_sea_id: number,
+  act_name: string,
+  act_description: string,
+  act_date_start: string,
+  act_date_end: string
+}
+
+interface BoardList {
+  detail: ProjectDetail;
+  sections: Section[];
+}
+
+
+const boardLists: BoardListOld[] = [
   {
     id: 1,
     title: "Ideas",
@@ -125,11 +155,13 @@ const boardLists: BoardList[] = [
 const ProjectDetailPage = () => {
 
   const { id } = useParams<{ id: string }>();
-  const [project, setProject] = useState([]);
+  const [project, setProject] = useState<ProjectDetail>();
+  const [sections, setSections] = useState<Section[]>([]);
 
   const handleProjectDetail = async (projectId: string) => {
     const data = await projectDetailRequest(projectId);
-    setProject(data.data);
+    setProject(data.data.data.detail);
+    setSections(data.data.data.sections);
   }
 
   useEffect(() => {
@@ -139,63 +171,65 @@ const ProjectDetailPage = () => {
   }, [id]);
 
   console.log("data-project", project);
+  console.log("data-sections", sections);
+  
 
   return (
     <LayoutMain>
       <header className="project-board-title pt-1">
-          <h1>Proyecto personal</h1>
+          <h1>{project?.pro_name}</h1>
       </header>
       <main className="project-board-page mt-2">
         <section className="project-board">
-          {boardLists.map((list) => (
-            <article className="project-board-list" key={list.id}>
+          {sections.map((list:Section) => (
+            <article className="project-board-list" key={list.acs_id}>
               <header className="project-board-list-header">
-                <h2>{list.title}</h2>
+                <h2>{list.acs_name}</h2>
                 <div>
-                  <span>{list.cards.length}</span>
-                  <button type="button" aria-label={`Opciones de ${list.title}`}>
+                  <span>{list.activities.length}</span>
+                  <button type="button" aria-label={`Opciones de ${list.acs_name}`}>
                     <BsThreeDots />
                   </button>
                 </div>
               </header>
 
               <div className="project-board-cards">
-                {list.cards.map((card) => (
-                  <article className="project-board-card" key={card.id}>
+                {list.activities.map((card:Activity) => (
+                  <article className="project-board-card" key={card.act_id}>
                     <div className="project-board-labels">
-                      {card.labels.map((label) => (
+                      {["green", "blue", "yellow"].map((label) => (
                         <span className={`project-board-label is-${label}`} key={label} />
                       ))}
                     </div>
 
-                    <h3>{card.title}</h3>
+                    <h3>{card.act_name}</h3>
 
                     <footer className="project-board-card-footer">
                       <div className="project-board-card-meta">
-                        {card.date && (
+                        {card.act_date_start && (
                           <span>
                             <BsCalendar3 />
-                            {card.date}
+                            {card.act_date_start}
                           </span>
                         )}
-                        {card.comments && (
+                        {/* {card.comments && ( */}
                           <span>
                             <BsChatLeftText />
-                            {card.comments}
+                            comments
                           </span>
-                        )}
-                        {card.attachments && (
+                        {/* )} */}
+                        {/* {card.attachments && ( */}
                           <span>
                             <BsPaperclip />
-                            {card.attachments}
+                            2
                           </span>
-                        )}
-                        {card.checklist && (
+                        {/* )} */}
+                        {/* {card.checklist && ( */}
                           <span>
                             <BsCheck2Square />
-                            {card.checklist}
+                            3
                           </span>
-                        )}
+                        {/* )} */}
                       </div>
 
                       {/* <div className="project-board-members">
