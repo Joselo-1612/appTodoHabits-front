@@ -1,8 +1,9 @@
 import { clientAuth } from "../config/clientAxios";
-import { ProjectRegisterJson } from "../interfaces/Project";
+import { Activity, ProjectRegisterJson, Section } from "../interfaces/Project";
 
 const BASE_PATH_PROJECT = 'project';
 const BASE_PATH_PROJECT_GROUP = 'project-group';
+const BASE_PATH_ACTIVITY = 'activity';
 
 export const projectsCreateRequest = async (dataProject: ProjectRegisterJson) => {
     return  await clientAuth.post(`${BASE_PATH_PROJECT}/create`, dataProject);
@@ -18,4 +19,12 @@ export const projectListRequest = async () => {
 
 export const projectDetailRequest = async (projectId: string) => {
     return await clientAuth.get(`${BASE_PATH_PROJECT}/detail/${projectId}`);
+}
+
+export const sectionActivityRequest = async (section: Section) => {
+    return await clientAuth.post(`${BASE_PATH_ACTIVITY}/section-activity`, section);
+}
+
+export const activityRequest = async (activity: Activity) => {
+    return await clientAuth.post(`${BASE_PATH_ACTIVITY}/create`, activity);
 }

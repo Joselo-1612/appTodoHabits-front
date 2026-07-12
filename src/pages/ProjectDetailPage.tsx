@@ -10,153 +10,42 @@ import {
   BsPlus,
   BsThreeDots,
 } from "react-icons/bs";
-import { projectDetailRequest } from "../services/project";
+import { activityRequest, projectDetailRequest, sectionActivityRequest } from "../services/project";
 import { useParams } from "react-router-dom";
+import { getDayMonth } from "../utils/date";
+import Form from 'react-bootstrap/Form';
+import { Button } from "react-bootstrap";
+import { useForm } from "../hooks/useForm";
+import { Activity, ActivityDetail, ProjectDetail, Section, SectionDetail, Tag } from "../interfaces/Project";
 
-type CardLabel = "green" | "yellow" | "orange" | "purple" | "blue";
-
-interface BoardCard {
-  id: number;
-  title: string;
-  labels: CardLabel[];
-  date?: string;
-  comments?: number;
-  attachments?: number;
-  checklist?: string;
-  members: string[];
+interface CreateActivityDisplay {
+  sectionId: number;
+  show: boolean;
 }
 
-interface BoardListOld {
-  id: number;
-  title: string;
-  cards: BoardCard[];
-}
-
-interface ProjectDetail {
-  pro_id: number;
-  pro_name: string;
-  pro_description: string;
-  pro_priority: string;
-  pro_date_start: string;
-  pro_date_end: string;
-}
-
-interface Section {
-  acs_id: number,
-  acs_name: string,
-  activities: Activity[]
-}
-
-interface Activity {
+/*
   act_id: number,
   act_sea_id: number,
   act_name: string,
   act_description: string,
   act_date_start: string,
   act_date_end: string
-}
-
-interface BoardList {
-  detail: ProjectDetail;
-  sections: Section[];
-}
-
-
-const boardLists: BoardListOld[] = [
-  {
-    id: 1,
-    title: "Ideas",
-    cards: [
-      {
-        id: 101,
-        title: "Definir el flujo de proyectos personales",
-        labels: ["green", "blue"],
-        comments: 3,
-        attachments: 1,
-        members: ["GP", "AM"],
-      },
-      {
-        id: 102,
-        title: "Crear estructura inicial de etiquetas",
-        labels: ["yellow"],
-        date: "28 Jun",
-        checklist: "2/5",
-        members: ["GP"],
-      },
-    ],
-  },
-  {
-    id: 2,
-    title: "Por hacer",
-    cards: [
-      {
-        id: 201,
-        title: "Diseñar modal para nueva actividad",
-        labels: ["purple", "orange"],
-        date: "30 Jun",
-        comments: 5,
-        attachments: 2,
-        members: ["GP", "LC"],
-      },
-      {
-        id: 202,
-        title: "Conectar grupos de proyecto con la API",
-        labels: ["blue"],
-        checklist: "1/4",
-        members: ["AM"],
-      },
-      {
-        id: 203,
-        title: "Validar estados: pendiente, activo y cerrado",
-        labels: ["green"],
-        comments: 1,
-        members: ["GP"],
-      },
-    ],
-  },
-  {
-    id: 3,
-    title: "En progreso",
-    cards: [
-      {
-        id: 301,
-        title: "Tablero visual estilo Trello",
-        labels: ["orange", "green"],
-        date: "Hoy",
-        comments: 8,
-        checklist: "4/6",
-        members: ["GP"],
-      },
-      {
-        id: 302,
-        title: "Ajustar responsive para columnas kanban",
-        labels: ["yellow", "purple"],
-        attachments: 1,
-        members: ["LC", "GP"],
-      },
-    ],
-  },
-  {
-    id: 4,
-    title: "Hecho",
-    cards: [
-      {
-        id: 401,
-        title: "Ruta protegida para proyectos",
-        labels: ["green"],
-        date: "Ayer",
-        checklist: "3/3",
-        members: ["GP"],
-      },
-    ],
-  },
-];
+*/
 
 const ProjectDetailPage = () => {
 
   const { id } = useParams<{ id: string }>();
+  const initialSectionActivity = { acs_name: "", acs_pro_id: Number(id) };
+  const initialCreateActivity: Activity = { act_sea_id: 1, act_name: "", act_description: "", act_date_start: "2026-07-11", act_date_end: "2026-07-11" };
+
   const [project, setProject] = useState<ProjectDetail>();
-  const [sections, setSections] = useState<Section[]>([]);
+  const [sections, setSections] = useState<SectionDetail[]>([]);
+  const [showCreateSection, setShowCreateSection] = useState<boolean>(false);
+  const [showCreateActivity, setShowCreateActivity] = useState<CreateActivityDisplay[]>([]);
+
+  const { form, setForm, handleChange } = useForm<Section>(initialSectionActivity);
+  const { form: formActivity, setForm: setFormActivity, handleChange: handleChangeActivity } = useForm<Activity>(initialCreateActivity);
+  const [refreshPage, setRefreshPage] = useState(false);
 
   const handleProjectDetail = async (projectId: string) => {
     const data = await projectDetailRequest(projectId);
@@ -164,15 +53,59 @@ const ProjectDetailPage = () => {
     setSections(data.data.data.sections);
   }
 
+  const handleShowCreateSection = () => {
+    setShowCreateSection(!showCreateSection);
+  }
+
+  const handleShowCreateActivity = (id: number, show: boolean) => {
+    setShowCreateActivity(prev => {
+      const existsValue = prev.some(item => item.sectionId === id);
+
+      if (existsValue) {
+        return prev.map(item =>
+          item.sectionId === id ? { ...item, show } : item
+        );
+      }
+
+      return [...prev, { sectionId: id, show }];
+    });
+  };
+
+  const handleRefresh = () => {
+    setRefreshPage(!refreshPage);
+  }
+
+  const handleCreateSection = async() => {
+    try{
+      await sectionActivityRequest(form);
+      setShowCreateSection(false);
+      setForm(initialSectionActivity);
+      handleRefresh()
+    } catch (error: any) {
+      // setError(error?.response?.data.message || "Error al registrar la actividad");
+      throw error;
+    }
+  }
+
+  const handleCreateActvity = async(index:number) => {
+    try{
+      await activityRequest(formActivity);
+      handleShowCreateActivity(index, false);
+      setFormActivity(initialCreateActivity);
+      handleRefresh()
+    } catch (error: any) {
+      // setError(error?.response?.data.message || "Error al registrar la actividad");
+      throw error;
+    }
+  }
+
   useEffect(() => {
     if (id) {
       handleProjectDetail(id);
     }
-  }, [id]);
+  }, [id, refreshPage]);
 
-  console.log("data-project", project);
-  console.log("data-sections", sections);
-  
+  console.log("val-showCreateActivity", showCreateActivity);
 
   return (
     <LayoutMain>
@@ -181,12 +114,12 @@ const ProjectDetailPage = () => {
       </header>
       <main className="project-board-page mt-2">
         <section className="project-board">
-          {sections.map((list:Section) => (
+          {sections.map((list:SectionDetail, index: number) => (
             <article className="project-board-list" key={list.acs_id}>
               <header className="project-board-list-header">
                 <h2>{list.acs_name}</h2>
                 <div>
-                  <span>{list.activities.length}</span>
+                  <span>{list.activities?.length || 0}</span>
                   <button type="button" aria-label={`Opciones de ${list.acs_name}`}>
                     <BsThreeDots />
                   </button>
@@ -194,11 +127,11 @@ const ProjectDetailPage = () => {
               </header>
 
               <div className="project-board-cards">
-                {list.activities.map((card:Activity) => (
+                {list.activities?.map((card:ActivityDetail) => (
                   <article className="project-board-card" key={card.act_id}>
                     <div className="project-board-labels">
-                      {["green", "blue", "yellow"].map((label) => (
-                        <span className={`project-board-label is-${label}`} key={label} />
+                      {card.tags.map((label: Tag, index) => (
+                        <span className={`project-board-label is-${label.tag_color}`} key={index} />
                       ))}
                     </div>
 
@@ -209,13 +142,13 @@ const ProjectDetailPage = () => {
                         {card.act_date_start && (
                           <span>
                             <BsCalendar3 />
-                            {card.act_date_start}
+                            Inicio: {getDayMonth(card.act_date_start)}.
                           </span>
                         )}
                         {/* {card.comments && ( */}
                           <span>
                             <BsChatLeftText />
-                            comments
+                            4
                           </span>
                         {/* )} */}
                         {/* {card.attachments && ( */}
@@ -231,28 +164,55 @@ const ProjectDetailPage = () => {
                           </span>
                         {/* )} */}
                       </div>
-
-                      {/* <div className="project-board-members">
-                        {card.members.map((member) => (
-                          <span key={`${card.id}-${member}`}>{member}</span>
-                        ))}
-                      </div> */}
                     </footer>
                   </article>
                 ))}
               </div>
-
-              <button className="project-board-add-card" type="button">
-                <BsPlus />
-                <span>Añadir una tarjeta</span>
-              </button>
+              {!showCreateActivity.some((item) => item.sectionId === index && item.show) ? (
+                <button className="project-board-add-card" type="button" onClick={() => handleShowCreateActivity(index, true)}>
+                  <BsPlus />
+                  <span>Añadir una tarjeta</span>
+                </button>
+              ): (
+              <Form.Group className="project-board-cards mt-2 d-flex align-items-center flex-column">
+                <Form.Control type="text" placeholder="Ingresa la seccion" name="act_name" value={formActivity.act_name} onChange={handleChangeActivity} style={{ outline: "none"}} />
+                <div className="d-flex gap-2">
+                  <Button variant="light" type="submit" size="sm" onClick={() => handleCreateActvity(index)}>
+                    Añadir
+                  </Button>
+                  <Button variant="primary" type="button" size="sm" onClick={() => handleShowCreateActivity(index, false)}>
+                    Cancelar
+                  </Button>
+                </div>
+              </Form.Group>
+              )}
             </article>
           ))}
 
-          <button className="project-board-add-list" type="button">
-            <BsPlus />
-            <span>Añadir otra lista</span>
-          </button>
+          {
+            !showCreateSection ? (
+              <button
+                className="project-board-add-list"
+                type="button"
+                onClick={handleShowCreateSection}>
+                  <BsPlus />
+                  <span>Añadir nueva seccion</span>
+              </button>
+            ) : (
+              <Form.Group className="project-board-add-list p-3 d-flex align-items-center flex-column" controlId="exampleForm.ControlInput1">
+                <Form.Control type="text" placeholder="Ingresa la seccion" name="acs_name" value={form.acs_name} onChange={handleChange} style={{ outline: "none"}} />
+                <div className="d-flex gap-2">
+                  <Button variant="primary" type="submit" size="sm" onClick={handleCreateSection}>
+                    Añadir
+                  </Button>
+                  <Button variant="primary" type="button" size="sm" onClick={handleShowCreateSection}>
+                    Cancelar
+                  </Button>
+                </div>
+              </Form.Group>
+            )
+          }
+
         </section>
       </main>
     </LayoutMain>
