@@ -408,6 +408,13 @@
   background: #f8f9fb;
 }
 
+.project-board-card.is-dragging {
+  box-shadow: 0 8px 16px rgba(9, 30, 66, 0.35);
+  cursor: grabbing;
+  rotate: 3deg;
+  width: 272px;
+}
+
 .project-board-labels {
   display: flex;
   flex-wrap: wrap;

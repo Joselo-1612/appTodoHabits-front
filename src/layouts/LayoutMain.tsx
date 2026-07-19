@@ -59,21 +59,19 @@ const LayoutMain: React.FC<ContainerProps> = ({ children }) => {
               <strong>Mis Proyectos </strong>
               <BsPlusCircle onClick={() => showActive()}/>
             </small>
-            <Nav.Link as={Link} to="/proyectos" className="text-dark m-0  ">
-              {Object.entries(listProject).map(([category, projects]: any) => (
-                <div key={category}>
-                  <BsFilterLeft />
-                  <small>{category}</small><br />
-                  {projects.map((project: any) => (
-                    <Link key={project.pro_id} to={`/proyecto/${project.pro_id}`} style={{ marginLeft: "20px", color:"#003049", textDecoration: "none" }}>
-                      <small style={{ fontSize: "12px" }}>
-                        {project.pro_name}
-                      </small>
-                    </Link>
-                  ))}
-                </div>
-              ))}
-            </Nav.Link>
+            {Object.entries(listProject).map(([category, projects]: any) => (
+              <div key={category}>
+                <BsFilterLeft />
+                <small>{category}</small><br />
+                {projects.map((project: any) => (
+                  <Link key={project.pro_id} to={`/proyecto/${project.pro_id}`} style={{ marginLeft: "20px", color:"#003049", textDecoration: "none" }}>
+                    <small style={{ fontSize: "12px" }}>
+                      {project.pro_name}
+                    </small>
+                  </Link>
+                ))}
+              </div>
+            ))}
             <hr />
           </Nav>
           <main className="col-12 col-md-10">{children}</main>
