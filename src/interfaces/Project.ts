@@ -44,7 +44,8 @@ export interface Activity {
   act_name: string,
   act_description: string,
   act_date_start: string,
-  act_date_end: string
+  act_date_end: string,
+  act_position?: number
 }
 
 export interface ActivityDetail extends Activity {

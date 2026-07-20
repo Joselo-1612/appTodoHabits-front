@@ -28,7 +28,6 @@ const ProjectDetailPage = () => {
 
   const { id } = useParams<{ id: string }>();
   const initialSectionActivity = { acs_name: "", acs_pro_id: Number(id) };
-  const initialCreateActivity: Activity = { act_sea_id: 1, act_name: "", act_description: "", act_date_start: "2026-07-11", act_date_end: "2026-07-11" };
 
   const [project, setProject] = useState<ProjectDetail>();
   const [sections, setSections] = useState<SectionDetail[]>([]);
@@ -37,7 +36,7 @@ const ProjectDetailPage = () => {
   const [activeCard, setActiveCard] = useState<ActivityDetail | null>(null);
 
   const { form, setForm, handleChange } = useForm<Section>(initialSectionActivity);
-  const { form: formActivity, setForm: setFormActivity, handleChange: handleChangeActivity } = useForm<Activity>(initialCreateActivity);
+
   const [refreshPage, setRefreshPage] = useState(false);
 
   const handleProjectDetail = async (projectId: string) => {
@@ -50,19 +49,6 @@ const ProjectDetailPage = () => {
     setShowCreateSection(!showCreateSection);
   }
 
-  const handleShowCreateActivity = (id: number, show: boolean) => {
-    setShowCreateActivity(prev => {
-      const existsValue = prev.some(item => item.sectionId === id);
-
-      if (existsValue) {
-        return prev.map(item =>
-          item.sectionId === id ? { ...item, show } : item
-        );
-      }
-
-      return [...prev, { sectionId: id, show }];
-    });
-  };
 
   const handleRefresh = () => {
     setRefreshPage(!refreshPage);
@@ -80,26 +66,28 @@ const ProjectDetailPage = () => {
     }
   }
 
-  const handleCreateActvity = async(index:number, seccionId: number|undefined) => {
-    try{
+  // const handleCreateActvity = async(index:number, seccionId: number|undefined) => {
+  //   try{
 
-      const activity = {
-        ...formActivity,
-        act_sea_id: seccionId ?? 1,
-      };
+  //     console.log("val-index", index);
 
-      setFormActivity(activity);
+  //     const activity = {
+  //       ...formActivity,
+  //       act_sea_id: seccionId ?? 1,
+  //     };
 
-      await activityRequest(activity);
+  //     setFormActivity(activity);
 
-      handleShowCreateActivity(index, false);
-      setFormActivity(initialCreateActivity);
-      handleRefresh();
-    } catch (error: any) {
-      // setError(error?.response?.data.message || "Error al registrar la actividad");
-      throw error;
-    }
-  }
+  //     // await activityRequest(activity);
+
+  //     handleShowCreateActivity(index, false);
+  //     setFormActivity(initialCreateActivity);
+  //     handleRefresh();
+  //   } catch (error: any) {
+  //     // setError(error?.response?.data.message || "Error al registrar la actividad");
+  //     throw error;
+  //   }
+  // }
 
   const ActivityCardContent = ({ card }: { card: ActivityDetail }) => (
     <>
@@ -142,9 +130,24 @@ const ProjectDetailPage = () => {
     </>
   );
 
-  const ItemActivity = ({card}: {card: ActivityDetail}) => {
+  const ItemActivity = ({ card, sectionId, index }: { card: ActivityDetail, sectionId: number, index: number }) => {
 
-    const { attributes, listeners, setNodeRef, isDragging } = useDraggable({ id: card.act_id || 1 });
+    const activityId = card.act_id || 1;
+
+    const { attributes, listeners, setNodeRef: setDragRef, isDragging } = useDraggable({
+      id: activityId,
+      data: { sectionId, index },
+    });
+
+    const { setNodeRef: setDropRef, isOver } = useDroppable({
+      id: `activity-${activityId}`,
+      data: { sectionId, index },
+    });
+
+    const setRefs = (node: HTMLElement | null) => {
+      setDragRef(node);
+      setDropRef(node);
+    };
 
     const style = {
       cursor: "grab",
@@ -155,9 +158,9 @@ const ProjectDetailPage = () => {
       <article
         {...listeners}
         {...attributes}
-        ref={setNodeRef}
+        ref={setRefs}
         key={card.act_id}
-        className="project-board-card"
+        className={`project-board-card${isOver ? " is-over" : ""}`}
         style={style}
       >
         <ActivityCardContent card={card} />
@@ -166,7 +169,52 @@ const ProjectDetailPage = () => {
   };
 
   const ListActivities = ({ list, index }: { list: SectionDetail, index: number }) => {
-    const { setNodeRef } = useDroppable({ id: index });
+    const sectionId = list.acs_id || index;
+    const initialCreateActivity: Activity = { act_sea_id: 1, act_name: "", act_description: "", act_date_start: "2026-07-11", act_date_end: "2026-07-11", act_position: 0 };
+    const { form: formActivity, setForm: setFormActivity, handleChange: handleChangeActivity } = useForm<Activity>(initialCreateActivity);
+
+    const handleShowCreateActivity = (id: number, show: boolean) => {
+      setShowCreateActivity((prev) => {
+        const existsValue = prev.some((item) => item.sectionId === id);
+
+        if (existsValue) {
+          return prev.map((item) =>
+            item.sectionId === id ? { ...item, show } : item,
+          );
+        }
+
+        return [...prev, { sectionId: id, show }];
+      });
+    };
+
+    const handleCreateActvity = async(index:number, seccionId: number|undefined) => {
+      try{
+
+        console.log("val-index", index);
+
+        const activity = {
+          ...formActivity,
+          act_sea_id: seccionId ?? 1
+        };
+
+        setFormActivity(activity);
+
+        await activityRequest(activity);
+
+        handleShowCreateActivity(index, false);
+        setFormActivity(initialCreateActivity);
+        handleRefresh();
+      } catch (error: any) {
+        // setError(error?.response?.data.message || "Error al registrar la actividad");
+        throw error;
+      }
+    }
+
+    const { setNodeRef } = useDroppable({
+      id: `section-${sectionId}`,
+      data: { sectionId, index: list.activities?.length || 0 },
+    });
+
     return (
       <article
         className="project-board-list"
@@ -183,8 +231,8 @@ const ProjectDetailPage = () => {
         </header>
 
         <div className="project-board-cards">
-          {list.activities?.map((card: ActivityDetail) => (
-            <ItemActivity card={card} />
+          {list.activities?.map((card: ActivityDetail, cardIndex: number) => (
+            <ItemActivity card={card} sectionId={sectionId} index={cardIndex} />
           ))}
         </div>
         {!showCreateActivity.some(
@@ -248,15 +296,44 @@ const ProjectDetailPage = () => {
 
     if (!over) return;
 
-    const activityId = active.id;
-    const sectionId = over.id;
+    const activityId = active.id as number;
+    const fromSectionId = active.data.current?.sectionId as number;
+    const { sectionId: toSectionId, index: toIndex } = over.data.current as { sectionId: number, index: number };
 
-    await  handleUpdateActivitySection(sectionId, activityId);
+    console.log("val-move", { activityId, fromSectionId, toSectionId, toIndex });
+
+    await handleUpdateActivitySection(toSectionId, activityId, toIndex);
+
+    setSections((prevSections) => {
+      const next = prevSections.map((section) => ({
+        ...section,
+        activities: [...(section.activities || [])],
+      }));
+
+      const fromSection = next.find((section) => (section.acs_id) === fromSectionId);
+      const toSection = next.find((section) => (section.acs_id) === toSectionId);
+
+      if (!fromSection || !toSection) return prevSections;
+
+      const fromIndex = fromSection.activities.findIndex((activity) => (activity.act_id || 1) === activityId);
+      if (fromIndex === -1) return prevSections;
+
+      const [movedActivity] = fromSection.activities.splice(fromIndex, 1);
+
+      let insertAt = toIndex;
+      if (fromSection === toSection && fromIndex < insertAt) {
+        insertAt -= 1;
+      }
+
+      toSection.activities.splice(insertAt, 0, movedActivity);
+
+      return next;
+    });
   }
 
-  const handleUpdateActivitySection = async(sectionId:number, activityId: number) => {
+  const handleUpdateActivitySection = async(sectionId:number, activityId: number, toIndex: number) => {
     try{
-      await updateActivitySectionRequest(sectionId, activityId);
+      await updateActivitySectionRequest(sectionId, activityId, toIndex);
       handleRefresh();
     } catch (error: any) {
       console.log("val-error", error);

@@ -29,6 +29,6 @@ export const activityRequest = async (activity: Activity) => {
     return await clientAuth.post(`${BASE_PATH_ACTIVITY}/create`, activity);
 }
 
-export const updateActivitySectionRequest = async (sectionId: number, activityId: number) => {
-    return await clientAuth.put(`${BASE_PATH_ACTIVITY}/activity-by-section/${sectionId}/${activityId}`);
+export const updateActivitySectionRequest = async (sectionId: number, activityId: number, toIndex: number) => {
+    return await clientAuth.put(`${BASE_PATH_ACTIVITY}/activity-by-section/${sectionId}/${activityId}?actPosition=${toIndex}`);
 }

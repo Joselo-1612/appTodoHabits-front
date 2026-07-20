@@ -15,6 +15,7 @@ const LayoutMain: React.FC<ContainerProps> = ({ children }) => {
 
     const {show, showActive, showInactive} = useUtil();
     const [listProject, setListProject] = useState<any[]>([]);
+    const [refreshPage, setRefreshPage] = useState(false);
 
     const handleListProjects = async () => {
       try {
@@ -28,7 +29,7 @@ const LayoutMain: React.FC<ContainerProps> = ({ children }) => {
 
     useEffect(() => {
         handleListProjects();
-    }, []);
+    }, [refreshPage]);
 
     return (
       <>
@@ -76,7 +77,7 @@ const LayoutMain: React.FC<ContainerProps> = ({ children }) => {
           </Nav>
           <main className="col-12 col-md-10">{children}</main>
           <div className="position-absolute">
-            <ProjectModal show={show} onClose={showInactive} refresh={() => {}} isNewProject={true} />
+            <ProjectModal show={show} onClose={showInactive} refresh={() => setRefreshPage(!refreshPage)} isNewProject={true} />
           </div>
         </div>
       </>
