@@ -17,7 +17,9 @@ import Form from 'react-bootstrap/Form';
 import { Button } from "react-bootstrap";
 import { useForm } from "../hooks/useForm";
 import { Activity, ActivityDetail, ProjectDetail, Section, SectionDetail, Tag } from "../interfaces/Project";
-import { DndContext, DragOverlay, useDraggable, useDroppable } from "@dnd-kit/core";
+import { DndContext, DragOverlay, PointerSensor, useDraggable, useDroppable, useSensor, useSensors } from "@dnd-kit/core";
+import ActivityModal from "../components/projects/ActivityModal";
+import { useUtil } from "../hooks/useUtil";
 
 interface CreateActivityDisplay {
   sectionId: number;
@@ -34,10 +36,18 @@ const ProjectDetailPage = () => {
   const [showCreateSection, setShowCreateSection] = useState<boolean>(false);
   const [showCreateActivity, setShowCreateActivity] = useState<CreateActivityDisplay[]>([]);
   const [activeCard, setActiveCard] = useState<ActivityDetail | null>(null);
-
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 8,
+      },
+    }),
+  );
+  const {show, showActive, showInactive} = useUtil();
   const { form, setForm, handleChange } = useForm<Section>(initialSectionActivity);
-
+  const [refreshModal, setRefreshModal] = useState(false);
   const [refreshPage, setRefreshPage] = useState(false);
+  const [selectedActivity, setSelectedActivity] = useState<Activity | null>(null);
 
   const handleProjectDetail = async (projectId: string) => {
     const data = await projectDetailRequest(projectId);
@@ -65,29 +75,6 @@ const ProjectDetailPage = () => {
       throw error;
     }
   }
-
-  // const handleCreateActvity = async(index:number, seccionId: number|undefined) => {
-  //   try{
-
-  //     console.log("val-index", index);
-
-  //     const activity = {
-  //       ...formActivity,
-  //       act_sea_id: seccionId ?? 1,
-  //     };
-
-  //     setFormActivity(activity);
-
-  //     // await activityRequest(activity);
-
-  //     handleShowCreateActivity(index, false);
-  //     setFormActivity(initialCreateActivity);
-  //     handleRefresh();
-  //   } catch (error: any) {
-  //     // setError(error?.response?.data.message || "Error al registrar la actividad");
-  //     throw error;
-  //   }
-  // }
 
   const ActivityCardContent = ({ card }: { card: ActivityDetail }) => (
     <>
@@ -150,7 +137,7 @@ const ProjectDetailPage = () => {
     };
 
     const style = {
-      cursor: "grab",
+      cursor: "pointer",
       opacity: isDragging ? 0 : 1,
     };
 
@@ -162,6 +149,10 @@ const ProjectDetailPage = () => {
         key={card.act_id}
         className={`project-board-card${isOver ? " is-over" : ""}`}
         style={style}
+        onDoubleClick={() => {
+        setSelectedActivity(card);
+        showActive();
+        }}
       >
         <ActivityCardContent card={card} />
       </article>
@@ -219,7 +210,8 @@ const ProjectDetailPage = () => {
       <article
         className="project-board-list"
         ref={setNodeRef}
-        key={list.acs_id}>
+        key={list.acs_id}
+        >
         <header className="project-board-list-header">
           <h2>{list.acs_name}</h2>
           <div>
@@ -300,8 +292,6 @@ const ProjectDetailPage = () => {
     const fromSectionId = active.data.current?.sectionId as number;
     const { sectionId: toSectionId, index: toIndex } = over.data.current as { sectionId: number, index: number };
 
-    console.log("val-move", { activityId, fromSectionId, toSectionId, toIndex });
-
     await handleUpdateActivitySection(toSectionId, activityId, toIndex);
 
     setSections((prevSections) => {
@@ -354,7 +344,7 @@ const ProjectDetailPage = () => {
         <h1>{project?.pro_name}</h1>
       </header>
       <main className="project-board-page mt-2">
-        <DndContext onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
+        <DndContext sensors={sensors} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
           <section className="project-board">
             {sections.map((list: SectionDetail, index: number) => (
               <ListActivities index={list.acs_id || index} list={list} />
@@ -413,6 +403,12 @@ const ProjectDetailPage = () => {
           </section>
         </DndContext>
       </main>
+      <ActivityModal
+        show={show}
+        onClose={showInactive}
+        refresh={() => setRefreshModal(!refreshModal)}
+        selectActivity={selectedActivity}
+      />
     </LayoutMain>
   );
 };

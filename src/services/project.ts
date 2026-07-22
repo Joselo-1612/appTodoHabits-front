@@ -32,3 +32,7 @@ export const activityRequest = async (activity: Activity) => {
 export const updateActivitySectionRequest = async (sectionId: number, activityId: number, toIndex: number) => {
     return await clientAuth.put(`${BASE_PATH_ACTIVITY}/activity-by-section/${sectionId}/${activityId}?actPosition=${toIndex}`);
 }
+
+export const activityDetailRequest = async (activityId: number) => {
+    return await clientAuth.get(`${BASE_PATH_ACTIVITY}/detail/${activityId}`);
+}
